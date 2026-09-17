@@ -10,6 +10,27 @@ export function routineSignature(tasks: RoutineItem[]): string {
   return tasks.map((task) => task.id).join('|')
 }
 
+/**
+ * Move one task up or down the routine.
+ *
+ * Reordering is by button rather than drag: a drag needs a precise press-hold
+ * on a small handle, which is exactly the gesture that is awkward one-handed
+ * on a phone. Returns a new list with `order` renumbered contiguously, so the
+ * stored order never drifts from the displayed one.
+ */
+export function moveTask(routine: RoutineItem[], id: string, delta: number): RoutineItem[] {
+  const ordered = [...routine].sort((a, b) => a.order - b.order)
+  const from = ordered.findIndex((item) => item.id === id)
+  if (from === -1) return routine
+
+  const to = from + delta
+  if (to < 0 || to >= ordered.length) return routine
+
+  const [moved] = ordered.splice(from, 1)
+  ordered.splice(to, 0, moved)
+  return ordered.map((item, index) => ({ ...item, order: index }))
+}
+
 export function createSession(tasks: RoutineItem[]): RoutineSession {
   return {
     phase: 'start',

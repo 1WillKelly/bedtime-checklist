@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { createDefaultSettings } from '../models/defaultRoutine'
 import type { AppSettings, RoutineItem, RoutineSession } from '../models/types'
 import {
   beginCompletion,
   canResume,
   createSession,
   finishCompletion,
+  moveTask,
   routineSignature,
   selectActiveTasks,
   startRoutine,
@@ -78,6 +80,10 @@ export function useAppState() {
     }))
   }, [])
 
+  const reorderTask = useCallback((id: string, delta: number) => {
+    setSettings((current) => ({ ...current, routine: moveTask(current.routine, id, delta) }))
+  }, [])
+
   const setChildName = useCallback((name: string) => {
     setSettings((current) => ({ ...current, child: { name } }))
   }, [])
@@ -105,6 +111,25 @@ export function useAppState() {
     setParentOpen(false)
   }, [])
 
+  /**
+   * Wipe everything and return to first-run setup. The escape hatch for a
+   * parent who wants to start completely over rather than just re-run tonight.
+   */
+  const resetEverything = useCallback(() => {
+    const fresh = createDefaultSettings()
+    setSettings(fresh)
+    clearSession()
+    setSession(createSession(selectActiveTasks(fresh.routine)))
+    setSetupStep('welcome')
+    setParentOpen(false)
+  }, [])
+
+  /** Start tonight over from the first step, back on the opening screen. */
+  const restartTonight = useCallback(() => {
+    resetSession()
+    setParentOpen(false)
+  }, [resetSession])
+
   const beginBedtime = useCallback(() => {
     setSession((current) => startRoutine(current, tasksRef.current))
   }, [])
@@ -130,9 +155,12 @@ export function useAppState() {
     closeParent: useCallback(() => setParentOpen(false), []),
     completeSetup,
     toggleTask,
+    reorderTask,
     setChildName,
     saveParentSettings,
     resetTonight,
+    resetEverything,
+    restartTonight,
     beginBedtime,
     completeCurrentTask,
     advanceAfterCelebration,

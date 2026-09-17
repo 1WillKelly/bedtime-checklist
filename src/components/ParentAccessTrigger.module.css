@@ -1,8 +1,4 @@
 .trigger {
-  position: absolute;
-  top: max(var(--sp-2), env(safe-area-inset-top));
-  right: max(var(--sp-2), env(safe-area-inset-right));
-  z-index: 6;
   display: grid;
   place-items: center;
   width: 44px;
@@ -12,6 +8,19 @@
   color: var(--dot-color, rgba(122, 107, 147, 0.42));
   background: none;
   transition: color var(--d-quick) var(--ease-out);
+}
+
+/* Floating: screens with no header (welcome, bedtime start, goodnight). */
+.floating {
+  position: absolute;
+  top: max(var(--sp-2), env(safe-area-inset-top));
+  right: max(var(--sp-2), env(safe-area-inset-right));
+  z-index: 6;
+}
+
+/* Inline: laid out by the routine header's grid. */
+.inline {
+  position: relative;
 }
 
 .dot {
@@ -44,7 +53,20 @@
   transition: stroke-dashoffset var(--hold-duration) linear;
 }
 
-.holding .dot {
+.holding /* Floating: screens with no header (welcome, bedtime start, goodnight). */
+.floating {
+  position: absolute;
+  top: max(var(--sp-2), env(safe-area-inset-top));
+  right: max(var(--sp-2), env(safe-area-inset-right));
+  z-index: 6;
+}
+
+/* Inline: laid out by the routine header's grid. */
+.inline {
+  position: relative;
+}
+
+.dot {
   transform: scale(0.7);
 }
 

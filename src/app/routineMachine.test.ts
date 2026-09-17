@@ -7,6 +7,7 @@ import {
   canResume,
   createSession,
   finishCompletion,
+  moveTask,
   routineSignature,
   selectActiveTasks,
   startRoutine,
@@ -168,5 +169,40 @@ describe('canResume', () => {
     const edited = selectActiveTasks(routine([{ enabled: false }]))
     expect(routineSignature(edited)).not.toBe(session.signature)
     expect(canResume(session, edited)).toBe(false)
+  })
+})
+
+describe('moveTask', () => {
+  const base: RoutineItem[] = [
+    { id: 'a', title: 'A', illustration: 'generic', enabled: true, order: 0 },
+    { id: 'b', title: 'B', illustration: 'generic', enabled: false, order: 1 },
+    { id: 'c', title: 'C', illustration: 'generic', enabled: true, order: 2 },
+  ]
+
+  it('moves a task down', () => {
+    expect(moveTask(base, 'a', 1).map((t) => t.id)).toEqual(['b', 'a', 'c'])
+  })
+
+  it('moves a task up', () => {
+    expect(moveTask(base, 'c', -1).map((t) => t.id)).toEqual(['a', 'c', 'b'])
+  })
+
+  it('renumbers order contiguously so it never drifts', () => {
+    expect(moveTask(base, 'a', 1).map((t) => t.order)).toEqual([0, 1, 2])
+  })
+
+  it('is a no-op at either end', () => {
+    expect(moveTask(base, 'a', -1)).toBe(base)
+    expect(moveTask(base, 'c', 1)).toBe(base)
+  })
+
+  it('ignores an unknown id', () => {
+    expect(moveTask(base, 'nope', 1)).toBe(base)
+  })
+
+  it('keeps enabled flags with their task, and drives the active order', () => {
+    const moved = moveTask(base, 'c', -2)
+    expect(moved.find((t) => t.id === 'b')?.enabled).toBe(false)
+    expect(selectActiveTasks(moved).map((t) => t.id)).toEqual(['c', 'a'])
   })
 })

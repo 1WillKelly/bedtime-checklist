@@ -1,0 +1,54 @@
+.header {
+  display: grid;
+  /* Fixed side columns keep the progress chain centred and clear of both
+     corner controls, whatever the routine length. */
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: var(--sp-1);
+  width: 100%;
+  padding-top: var(--sp-1);
+}
+
+.corner {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--corner-color, rgba(108, 123, 153, 0.75));
+  transition:
+    background-color var(--d-press) var(--ease-out),
+    transform var(--d-press) var(--ease-out);
+}
+
+.corner svg {
+  width: 21px;
+  height: 21px;
+}
+
+.corner:active {
+  transform: scale(0.92);
+  background: rgba(107, 128, 226, 0.12);
+}
+
+.corner:focus-visible {
+  outline: 3px solid var(--c-indigo);
+  outline-offset: 2px;
+}
+
+.onNight {
+  --corner-color: rgba(233, 238, 252, 0.6);
+}
+
+/* The parent dot lives in the right column rather than floating over the
+   layout, so it can never overlap the progress chain. */
+.center {
+  min-width: 0;
+}
+
+.parentSlot {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}

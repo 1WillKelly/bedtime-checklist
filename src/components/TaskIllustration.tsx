@@ -6,8 +6,11 @@ import { getIllustration } from './illustrations'
 type Props = {
   /** Illustration registry key, e.g. the RoutineItem's `illustration` field. */
   id: string
-  /** `hero` fills the task screen; `chip` is the small setup-list version. */
-  size?: 'hero' | 'chip'
+  /**
+   * `hero` fills the task screen, `celebrate` is the slightly smaller version
+   * that shares the reward screen with the star, `chip` is the setup-list size.
+   */
+  size?: 'hero' | 'celebrate' | 'chip'
   className?: string
 }
 
@@ -21,7 +24,12 @@ export function TaskIllustration({ id, size = 'hero', className }: Props) {
 
   return (
     <div
-      className={[styles.scene, size === 'chip' ? styles.small : '', className]
+      className={[
+        styles.scene,
+        size === 'chip' ? styles.small : '',
+        size === 'celebrate' ? styles.celebrate : '',
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
       style={

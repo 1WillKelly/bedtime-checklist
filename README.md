@@ -53,9 +53,43 @@ src/
 public/        Manifest and icons, copied verbatim into the build
 ```
 
+## Using it
+
+**Setting up** (parents): enter a name — optional, the app uses neutral copy
+without one — then turn steps on or off and use the arrows to put them in your
+order. Everything is saved on the device and can be changed later.
+
+**During bedtime** (the child): one step fills the screen, with one enormous
+green button. Finishing a step plays a five-second celebration featuring the
+step they just did, then the next step slides in.
+
+The header carries the two parent controls, both deliberately small, muted and
+at the top of the screen — away from the thumb path the big button owns:
+
+| Control | What it does |
+| --- | --- |
+| ↺ (top left) | Start tonight over. Always asks first, so a stray tap is harmless. |
+| ● (top right) | Hold for ~1.5s to open parent settings. |
+| "Already did it" | Marks the current step done without the celebration — for a step that happened before the app was opened. |
+
+Parent settings holds the name, the step list and its order, "Start tonight
+over", and a full erase that returns to first-run setup.
+
 ## Notes
 
 - **Add to Home Screen** works on iOS and Android via `public/manifest.webmanifest`.
   There is no service worker, so the app needs a connection on first load.
-- **Parent settings** are behind a long-press so a child can't wander into them.
-- **Reduced motion** is respected throughout (see `src/utils/motion.ts`).
+- **Nothing can skip a step.** Progression is locked for the whole celebration
+  and the page turn behind it, guarded in three places (see
+  `features/routine/RoutineScreen.tsx`). Verified against ~12,000 taps in three
+  seconds advancing exactly one step.
+- **Timing lives in the CSS tokens.** `--d-celebrate` is the length of the
+  reward and the length of the interaction lock; `src/utils/motion.ts` reads it
+  back, parsing the unit (browsers normalise `5000ms` to `5s`).
+- **Reduced motion** removes the movement, not the reward or its length — the
+  child still needs to see what they finished.
+- **Placeholder art.** Task pictures are emoji on a coloured scene, and the
+  mascot is a hand-drawn SVG. Both are swapped in one place:
+  `src/components/illustrations.tsx` (set `Art` on an entry) and
+  `src/components/Mascot.tsx`. Icons in `public/icons/` are generated
+  placeholders.

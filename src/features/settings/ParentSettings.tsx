@@ -4,6 +4,7 @@ import { CompletionButton } from '../../components/CompletionButton'
 import { RoutineToggleList } from '../../components/RoutineToggleList'
 import { Screen } from '../../components/Screen'
 import type { AppSettings, RoutineItem } from '../../models/types'
+import { moveTask } from '../../app/routineMachine'
 import { cleanName } from '../../utils/copy'
 import styles from './settings.module.css'
 
@@ -11,6 +12,8 @@ type Props = {
   settings: AppSettings
   onSave: (name: string, routine: RoutineItem[]) => void
   onResetRoutine: (name: string, routine: RoutineItem[]) => void
+  /** Wipe the name and routine and return to first-run setup. */
+  onResetEverything: () => void
   onClose: () => void
 }
 
@@ -31,7 +34,13 @@ const BackIcon = () => (
  * Parent-only. Edits are held locally and committed on Save, so a parent can
  * back out of a change. No PIN, no account — the long-press is the gate.
  */
-export function ParentSettings({ settings, onSave, onResetRoutine, onClose }: Props) {
+export function ParentSettings({
+  settings,
+  onSave,
+  onResetRoutine,
+  onResetEverything,
+  onClose,
+}: Props) {
   const [name, setName] = useState(settings.child.name)
   const [routine, setRoutine] = useState<RoutineItem[]>(() =>
     settings.routine.map((item) => ({ ...item })),
@@ -44,6 +53,9 @@ export function ParentSettings({ settings, onSave, onResetRoutine, onClose }: Pr
     setRoutine((current) =>
       current.map((item) => (item.id === id ? { ...item, enabled: !item.enabled } : item)),
     )
+
+  const move = (id: string, delta: number) =>
+    setRoutine((current) => moveTask(current, id, delta))
 
   return (
     <Screen>
@@ -84,7 +96,7 @@ export function ParentSettings({ settings, onSave, onResetRoutine, onClose }: Pr
 
           <div className={styles.group}>
             <span className={styles.groupLabel}>Bedtime steps</span>
-            <RoutineToggleList routine={routine} onToggle={toggle} />
+            <RoutineToggleList routine={routine} onToggle={toggle} onMove={move} />
           </div>
         </div>
 
@@ -99,12 +111,15 @@ export function ParentSettings({ settings, onSave, onResetRoutine, onClose }: Pr
             onPress={() => onSave(cleanName(name), routine)}
           />
           <CompletionButton
-            label="Reset tonight's routine"
+            label="Start tonight over"
             variant="danger"
             locked={enabledCount === 0}
             onPress={() => onResetRoutine(cleanName(name), routine)}
           />
-          <p className={styles.note}>Resetting starts bedtime again from the first step.</p>
+          <p className={styles.note}>Saves your changes and goes back to the first step.</p>
+          <button type="button" className={styles.reset} onClick={onResetEverything}>
+            Erase everything and set up again
+          </button>
         </div>
       </div>
     </Screen>

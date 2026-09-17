@@ -79,7 +79,7 @@
   /* ---- Motion ---- */
   --d-press: 110ms;
   --d-quick: 220ms;
-  --d-celebrate: 800ms;
+  --d-celebrate: 5000ms;
   --d-slide: 340ms;
   --d-scene: 600ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -89,7 +89,6 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --d-quick: 120ms;
-    --d-celebrate: 700ms;
     --d-slide: 1ms;
     --d-scene: 1ms;
   }

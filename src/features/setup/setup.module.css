@@ -125,30 +125,77 @@
 /* ---------- Routine setup list ---------- */
 .list {
   display: grid;
-  gap: var(--sp-2);
+  gap: var(--sp-1);
   width: 100%;
   align-content: start;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .row {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto auto 1fr;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   width: 100%;
   min-height: var(--tap-min);
-  padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-md);
-  background: transparent;
+}
+
+/* Stacked chevrons: a narrow column that still gives each arrow a real target. */
+.reorder {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  flex: 0 0 auto;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 27px;
+  padding: 0;
+  color: var(--c-indigo-deep);
+  border-radius: var(--r-sm);
+}
+
+.arrow svg {
+  width: 17px;
+  height: 17px;
+}
+
+.arrow:disabled {
+  color: #cdd4e0;
+}
+
+.arrow:not(:disabled):active {
+  background: rgba(107, 128, 226, 0.14);
+}
+
+.arrow:focus-visible {
+  outline: 3px solid var(--c-indigo);
+  outline-offset: 1px;
+}
+
+/* The on/off target: the whole rest of the row. */
+.rowMain {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) 0;
+  border-radius: var(--r-md);
   text-align: left;
   transition: background-color var(--d-quick) var(--ease-out);
 }
 
-.row:active {
+.rowMain:active {
   background: rgba(107, 128, 226, 0.08);
 }
 
-.row:focus-visible {
+.rowMain:focus-visible {
   outline: 3px solid var(--c-indigo);
   outline-offset: 2px;
 }
@@ -163,11 +210,8 @@
   color: var(--c-ink);
 }
 
-.rowOff .chip {
-  flex: 0 0 auto;
-}
-
-.rowTitle {
+/* Disabled steps recede, but stay legible and reorderable. */
+.rowOff .rowTitle {
   color: var(--text-soft);
 }
 
@@ -205,6 +249,14 @@
 
 .switchOn .knob {
   transform: translateX(22px);
+}
+
+.note {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text-soft);
+  text-align: center;
+  line-height: 1.4;
 }
 
 .warning {

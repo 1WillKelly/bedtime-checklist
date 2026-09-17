@@ -7,6 +7,8 @@ type Props = {
   onOpen: () => void
   /** Lightens the dot for use on the dark goodnight screen. */
   tone?: 'day' | 'night'
+  /** Lays the dot out in flow (for the routine header) instead of floating it. */
+  inline?: boolean
 }
 
 const HOLD_MS = 1600
@@ -16,13 +18,18 @@ const HOLD_MS = 1600
  * 1.6s hold — out of the child's tap path, and invisible to a child's intent,
  * without hiding it from a parent who knows where to look.
  */
-export function ParentAccessTrigger({ onOpen, tone = 'day' }: Props) {
+export function ParentAccessTrigger({ onOpen, tone = 'day', inline = false }: Props) {
   const { holding, handlers } = useLongPress({ duration: HOLD_MS, onLongPress: onOpen })
 
   return (
     <button
       type="button"
-      className={[styles.trigger, tone === 'night' ? styles.onNight : '', holding ? styles.holding : '']
+      className={[
+        styles.trigger,
+        inline ? styles.inline : styles.floating,
+        tone === 'night' ? styles.onNight : '',
+        holding ? styles.holding : '',
+      ]
         .filter(Boolean)
         .join(' ')}
       style={{ '--hold-duration': `${HOLD_MS}ms` } as CSSProperties}

@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { CompletionButton } from '../../components/CompletionButton'
 import { CompletionEffect } from '../../components/CompletionEffect'
-import { ParentAccessTrigger } from '../../components/ParentAccessTrigger'
 import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { Screen } from '../../components/Screen'
+import { ScreenHeader } from '../../components/ScreenHeader'
 import type { RoutineItem } from '../../models/types'
 import { praise } from '../../utils/copy'
 import { successFeedback } from '../../utils/haptics'
@@ -24,6 +24,8 @@ type Props = {
   /** Called when the celebration ends and the routine should advance. */
   onCelebrationEnd: () => void
   onOpenParentSettings: () => void
+  /** Restart tonight from the first step (already confirmed by the caller). */
+  onRestart: () => void
 }
 
 /**
@@ -49,6 +51,7 @@ export function RoutineScreen({
   onComplete,
   onCelebrationEnd,
   onOpenParentSettings,
+  onRestart,
 }: Props) {
   const [stage, setStage] = useState<Stage>('idle')
   /** Snapshot of the task turning away, kept only for the length of the slide. */
@@ -68,6 +71,38 @@ export function RoutineScreen({
     [],
   )
 
+  /**
+   * Starts the page turn and advances. Shared by both completion paths so the
+   * lock and the slide behave identically however a step was finished.
+   */
+  const runPageTurn = useCallback(
+    (leaving: RoutineItem) => {
+      setOutgoing(leaving)
+      setStage('sliding')
+      onCelebrationEnd()
+
+      const slideId = window.setTimeout(() => {
+        setOutgoing(null)
+        setStage('idle')
+        busy.current = false
+      }, readDurationToken('--d-slide', SLIDE_MS))
+      timers.current.push(slideId)
+    },
+    [onCelebrationEnd],
+  )
+
+  /**
+   * "We already did this one." Marks the step done and moves on without the
+   * celebration — the child did not just earn it, so we do not pretend they
+   * did. Runs through the same lock, so it cannot double-advance either.
+   */
+  const handleAlreadyDid = useCallback(() => {
+    if (busy.current || stage !== 'idle' || transitioning || !task) return
+    busy.current = true
+    onComplete()
+    runPageTurn(task)
+  }, [onComplete, runPageTurn, stage, task, transitioning])
+
   const handlePress = useCallback(() => {
     // Three independent guards, because a toddler generates taps faster than
     // React re-renders: the ref (same frame), the stage (this render), and
@@ -82,19 +117,10 @@ export function RoutineScreen({
     const celebrateId = window.setTimeout(() => {
       // Advancing and starting the slide happen in one batched update, so the
       // button is never briefly live between the two animations.
-      setOutgoing(task)
-      setStage('sliding')
-      onCelebrationEnd()
-
-      const slideId = window.setTimeout(() => {
-        setOutgoing(null)
-        setStage('idle')
-        busy.current = false
-      }, readDurationToken('--d-slide', SLIDE_MS))
-      timers.current.push(slideId)
+      runPageTurn(task)
     }, readDurationToken('--d-celebrate', CELEBRATION_MS))
     timers.current.push(celebrateId)
-  }, [onCelebrationEnd, onComplete, stage, task, transitioning])
+  }, [onComplete, runPageTurn, stage, task, transitioning])
 
   if (!task) return null
 
@@ -102,15 +128,35 @@ export function RoutineScreen({
 
   return (
     <Screen>
-      <ParentAccessTrigger onOpen={onOpenParentSettings} />
-
       <div className={styles.routine}>
-        <div className={styles.progressRow}>
+        <ScreenHeader onRestart={onRestart} onOpenParentSettings={onOpenParentSettings}>
           <ProgressIndicator
             total={tasks.length}
             completed={completedCount}
             currentIndex={currentIndex}
           />
+        </ScreenHeader>
+
+        <div className={styles.secondaryRow}>
+          <button
+            type="button"
+            className={styles.alreadyDid}
+            onClick={handleAlreadyDid}
+            disabled={locked}
+            aria-label={`${task.title} — we already did this, skip ahead`}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M4.5 12.5l5 5 10-11"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Already did it
+          </button>
         </div>
 
         <div className={styles.stage}>
@@ -132,7 +178,8 @@ export function RoutineScreen({
       {stage === 'celebrating' && (
         <CompletionEffect
           message={praise(childName, currentIndex)}
-          caption={`${task.title} complete!`}
+          taskTitle={task.title}
+          illustration={task.illustration}
           nextTitle={nextTask ? nextTask.title : null}
           total={tasks.length}
           completed={completedCount}

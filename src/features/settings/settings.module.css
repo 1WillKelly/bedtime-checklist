@@ -99,6 +99,22 @@
   text-align: center;
 }
 
+/* Quiet by design: a full wipe should take a deliberate look to find. */
+.reset {
+  min-height: 44px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--text-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.reset:focus-visible {
+  outline: 3px solid var(--c-indigo);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
 .warning {
   font-size: var(--fs-small);
   font-weight: 700;

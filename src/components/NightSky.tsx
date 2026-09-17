@@ -40,16 +40,22 @@ export function NightSky({ mood = 'awake', seed = 7 }: Props) {
     [seed],
   )
 
-  // Kept to the upper band: screen copy is vertically centred, and a gold star
-  // sitting behind a headline reads as clutter rather than atmosphere.
+  /*
+   * Big stars are pushed into the upper corners rather than scattered. Screen
+   * copy is centred both ways, and a gold star sitting behind a headline reads
+   * as clutter rather than atmosphere. The small specks still go anywhere.
+   */
   const bigStars = useMemo(
     () =>
-      Array.from({ length: 4 }, (_, index) => ({
-        left: 6 + rand(seed, index, 5) * 82,
-        top: 4 + rand(seed, index, 6) * 30,
-        size: 14 + rand(seed, index, 7) * 18,
-        delay: rand(seed, index, 8) * 5,
-      })),
+      Array.from({ length: 4 }, (_, index) => {
+        const onLeft = index % 2 === 0
+        return {
+          left: (onLeft ? 4 : 72) + rand(seed, index, 5) * 22,
+          top: 5 + rand(seed, index, 6) * 20,
+          size: 14 + rand(seed, index, 7) * 16,
+          delay: rand(seed, index, 8) * 5,
+        }
+      }),
     [seed],
   )
 

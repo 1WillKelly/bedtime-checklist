@@ -53,15 +53,59 @@
 .routine {
   display: grid;
   /* Fixed chrome top and bottom; only the middle card animates. */
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   flex: 1;
   gap: var(--sp-3);
   min-height: 0;
 }
 
-.progressRow {
-  /* Inset symmetrically so the chain never runs under the parent-access dot. */
-  padding: var(--sp-2) 44px var(--sp-1);
+/*
+ * Parent escape valve for a step that happened before the app was opened.
+ * Deliberately quiet and parked at the top of the screen, away from the
+ * thumb path, so it never competes with the one primary action.
+ */
+.secondaryRow {
+  display: flex;
+  justify-content: center;
+  padding-bottom: var(--sp-1);
+}
+
+.alreadyDid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-pill);
+  border: 2px solid var(--c-hairline);
+  background: transparent;
+  color: var(--text-soft);
+  font-size: var(--fs-small);
+  font-weight: 800;
+  transition:
+    background-color var(--d-press) var(--ease-out),
+    transform var(--d-press) var(--ease-out);
+}
+
+.alreadyDid:active {
+  transform: scale(0.97);
+  background: rgba(107, 128, 226, 0.1);
+}
+
+.alreadyDid:disabled {
+  opacity: 0.4;
+}
+
+.alreadyDid:focus-visible {
+  outline: 3px solid var(--c-indigo);
+  outline-offset: 2px;
+}
+
+.alreadyDid svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
 }
 
 .stage {
