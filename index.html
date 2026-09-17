@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      viewport-fit=cover exposes env(safe-area-inset-*) so the big button can
+      stay clear of the Home indicator. We deliberately do NOT set
+      user-scalable=no: double-tap zoom is suppressed with CSS touch-action,
+      which leaves pinch-zoom available for accessibility.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Goodnight Checklist</title>
+    <meta name="description" content="A gentle, picture-first bedtime routine for young children." />
+
+    <meta name="theme-color" content="#111d36" />
+    <meta name="color-scheme" content="light" />
+
+    <!-- Add to Home Screen on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Goodnight" />
+
+    <!-- Relative hrefs so everything resolves under any GitHub Pages base path. -->
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

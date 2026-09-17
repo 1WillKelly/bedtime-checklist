@@ -1,0 +1,44 @@
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /*
+   * A definite height, not min-height: it is what lets an inner region scroll
+   * instead of the page growing past the viewport and being clipped by the
+   * body's overflow:hidden. Child screens never scroll at all; parent screens
+   * scroll their middle section while the action stays pinned.
+   */
+  height: 100vh;
+  height: 100dvh;
+  padding-top: max(var(--sp-4), env(safe-area-inset-top));
+  /* The action must never sit under the Home indicator. */
+  padding-bottom: max(var(--sp-5), calc(env(safe-area-inset-bottom) + var(--sp-3)));
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
+  overflow: hidden;
+  transition: background-color var(--d-scene) var(--ease-out);
+}
+
+.day {
+  background: var(--c-cream);
+  color: var(--c-ink);
+}
+
+.night {
+  background: var(--c-night-bottom);
+  color: var(--c-night-ink);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /* Required for a nested scroll region inside a flex column. */
+  min-height: 0;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+}

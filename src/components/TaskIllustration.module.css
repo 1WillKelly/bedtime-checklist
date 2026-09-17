@@ -1,0 +1,74 @@
+.scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(72vw, 46vh, 340px);
+  aspect-ratio: 1;
+  border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+  background: var(--tint);
+  box-shadow: var(--sh-card);
+  overflow: hidden;
+}
+
+.scene::before {
+  /* Soft highlight so the blob reads as a lit shape, not a flat swatch. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 32% 26%,
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0) 58%
+  );
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.22;
+}
+
+.blobA {
+  width: 46%;
+  height: 46%;
+  right: -12%;
+  bottom: -14%;
+}
+
+.blobB {
+  width: 22%;
+  height: 22%;
+  left: 6%;
+  bottom: 12%;
+  opacity: 0.16;
+}
+
+.glyph {
+  position: relative;
+  font-size: min(34vw, 22vh, 168px);
+  line-height: 1;
+  filter: drop-shadow(0 10px 18px rgba(59, 45, 85, 0.22));
+}
+
+.art {
+  position: relative;
+  width: 66%;
+  height: 66%;
+  filter: drop-shadow(0 10px 18px rgba(59, 45, 85, 0.22));
+}
+
+.small {
+  width: min(18vw, 64px);
+  box-shadow: none;
+  border-radius: 34% 66% 40% 60% / 58% 42% 58% 42%;
+}
+
+.small .glyph {
+  font-size: min(9vw, 32px);
+  filter: none;
+}
+
+.small .art {
+  filter: none;
+}

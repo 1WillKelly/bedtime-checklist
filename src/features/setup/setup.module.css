@@ -1,0 +1,212 @@
+/* ---------- Welcome ---------- */
+.welcome {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  flex: 1;
+  gap: var(--sp-5);
+  text-align: center;
+}
+
+.welcomeBody {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--sp-4);
+}
+
+.mascot {
+  width: min(52vw, 30vh, 230px);
+  aspect-ratio: 1;
+}
+
+.mascot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.28));
+}
+
+.brand {
+  font-size: var(--fs-hero);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--c-night-ink-soft);
+  max-width: 22ch;
+}
+
+/* ---------- Shared parent form layout ---------- */
+.form {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  flex: 1;
+  gap: var(--sp-5);
+}
+
+.head {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  text-align: center;
+  padding-top: var(--sp-5);
+}
+
+.question {
+  font-size: var(--fs-title);
+  font-weight: 900;
+  line-height: 1.15;
+  max-width: 16ch;
+}
+
+.hint {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text-soft);
+  max-width: 26ch;
+}
+
+.middle {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: var(--sp-5);
+  /* Scrolls only when the parent's task list is taller than the screen. */
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.field {
+  width: 100%;
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.input {
+  width: 100%;
+  min-height: 68px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-lg);
+  border: 2px solid var(--c-hairline);
+  background: var(--c-white);
+  color: var(--c-ink);
+  font-size: var(--fs-title);
+  font-weight: 800;
+  text-align: center;
+  box-shadow: var(--sh-soft);
+  transition: border-color var(--d-quick) var(--ease-out);
+}
+
+.input::placeholder {
+  color: #c3ccdb;
+  font-weight: 700;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--c-indigo);
+}
+
+.foot {
+  display: grid;
+  gap: var(--sp-3);
+  padding-top: var(--sp-2);
+}
+
+/* ---------- Routine setup list ---------- */
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  width: 100%;
+  align-content: start;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  background: transparent;
+  text-align: left;
+  transition: background-color var(--d-quick) var(--ease-out);
+}
+
+.row:active {
+  background: rgba(107, 128, 226, 0.08);
+}
+
+.row:focus-visible {
+  outline: 3px solid var(--c-indigo);
+  outline-offset: 2px;
+}
+
+.chip {
+  flex: 0 0 auto;
+}
+
+.rowTitle {
+  font-size: var(--fs-body);
+  font-weight: 800;
+  color: var(--c-ink);
+}
+
+.rowOff .chip {
+  flex: 0 0 auto;
+}
+
+.rowTitle {
+  color: var(--text-soft);
+}
+
+.rowOff .chip {
+  opacity: 0.45;
+  filter: saturate(0.4);
+}
+
+/* A real switch look, but driven by a <button role="switch">. */
+.switch {
+  position: relative;
+  width: 54px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  background: #d7dde8;
+  transition: background-color var(--d-quick) var(--ease-out);
+  flex: 0 0 auto;
+}
+
+.switchOn {
+  background: var(--c-green);
+}
+
+.knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--c-white);
+  box-shadow: 0 2px 5px rgba(30, 47, 82, 0.28);
+  transition: transform var(--d-quick) var(--ease-out);
+}
+
+.switchOn .knob {
+  transform: translateX(22px);
+}
+
+.warning {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--c-coral-deep);
+  text-align: center;
+}

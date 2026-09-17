@@ -1,0 +1,59 @@
+.sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--c-night-top) 0%, var(--c-night-bottom) 100%);
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--c-white);
+  opacity: 0.55;
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+.bigStar {
+  position: absolute;
+  color: var(--c-gold);
+  animation: floatStar 7s ease-in-out infinite;
+}
+
+.bigStar svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(255, 201, 74, 0.35));
+}
+
+.cloud {
+  position: absolute;
+  bottom: -6%;
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+  background: var(--c-night-cloud);
+  opacity: 0.55;
+  filter: blur(1px);
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+
+@keyframes floatStar {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg);
+  }
+}

@@ -1,0 +1,97 @@
+.track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 var(--sp-2);
+}
+
+.node {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: clamp(22px, 7.2vw, 34px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--c-white);
+  border: 2px solid var(--c-hairline);
+  transition:
+    background-color var(--d-quick) var(--ease-out),
+    border-color var(--d-quick) var(--ease-out),
+    transform var(--d-quick) var(--ease-pop);
+}
+
+.node svg {
+  width: 64%;
+  height: 64%;
+  color: transparent;
+  transition: color var(--d-quick) var(--ease-out);
+}
+
+/* The connecting thread that makes the dots read as one journey. */
+.link {
+  flex: 0 1 clamp(6px, 2.6vw, 16px);
+  height: 3px;
+  border-radius: 2px;
+  background: var(--c-hairline);
+  transition: background-color var(--d-quick) var(--ease-out);
+}
+
+.linkDone {
+  background: var(--c-gold);
+}
+
+.done {
+  background: var(--c-gold);
+  border-color: var(--c-gold-deep);
+}
+
+.done svg {
+  color: var(--c-white);
+}
+
+.justDone {
+  animation: nodePop var(--d-celebrate) var(--ease-pop);
+}
+
+/* Meaning is not colour-only: the active step also carries a ring. */
+.current {
+  border-color: var(--c-indigo);
+  box-shadow: 0 0 0 3px rgba(107, 128, 226, 0.18);
+}
+
+/* Night variant, used on the celebration interstitial. */
+.onNight .node {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.onNight .link {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.onNight .done {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+}
+
+.onNight .linkDone {
+  background: var(--c-gold);
+}
+
+.onNight .done svg {
+  color: #7a5200;
+}
+
+@keyframes nodePop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.45);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

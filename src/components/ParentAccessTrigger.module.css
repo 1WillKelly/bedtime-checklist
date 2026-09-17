@@ -1,0 +1,58 @@
+.trigger {
+  position: absolute;
+  top: max(var(--sp-2), env(safe-area-inset-top));
+  right: max(var(--sp-2), env(safe-area-inset-right));
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--dot-color, rgba(122, 107, 147, 0.42));
+  background: none;
+  transition: color var(--d-quick) var(--ease-out);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  transition: transform var(--d-quick) var(--ease-out);
+}
+
+.ring {
+  position: absolute;
+  inset: 4px;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.ringPath {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+
+/* Fills while held, so a parent can see the hold registering. */
+.holding .ringPath {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--hold-duration) linear;
+}
+
+.holding .dot {
+  transform: scale(0.7);
+}
+
+.trigger:focus-visible {
+  outline: 3px solid var(--c-grape);
+  outline-offset: 2px;
+}
+
+.onNight {
+  --dot-color: rgba(243, 236, 255, 0.4);
+}

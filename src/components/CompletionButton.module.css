@@ -1,0 +1,107 @@
+.button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: var(--btn-h);
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-xl);
+  background: var(--face);
+  color: var(--c-white);
+  font-size: var(--fs-action);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  box-shadow: 0 var(--btn-drop) 0 var(--edge), 0 14px 26px var(--glow);
+  transform: translateY(0);
+  transition:
+    transform var(--d-press) var(--ease-out),
+    box-shadow var(--d-press) var(--ease-out),
+    filter var(--d-press) linear;
+}
+
+.button::after {
+  /* Lit top face — reads as a physical slab rather than a flat rectangle. */
+  content: '';
+  position: absolute;
+  inset: 3px 3px auto 3px;
+  height: 44%;
+  border-radius: var(--r-xl) var(--r-xl) 40% 40%;
+  background: linear-gradient(rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+}
+
+/* The primary child action: green, shouty, unmissable. */
+.action {
+  --face: var(--c-green);
+  --edge: var(--c-green-deep);
+  --glow: rgba(46, 147, 85, 0.3);
+  text-transform: uppercase;
+}
+
+/* Parent-facing navigation: calmer indigo. */
+.nav {
+  --face: var(--c-indigo);
+  --edge: var(--c-indigo-deep);
+  --glow: rgba(79, 99, 196, 0.28);
+  min-height: var(--btn-h-nav);
+  font-size: var(--fs-title);
+}
+
+/* Destructive parent action. */
+.danger {
+  --face: var(--c-coral);
+  --edge: var(--c-coral-deep);
+  --glow: rgba(205, 64, 60, 0.25);
+  min-height: var(--btn-h-nav);
+  font-size: var(--fs-body);
+}
+
+/* Pressed: the slab sinks onto its own edge. */
+.pressed {
+  transform: translateY(var(--btn-drop));
+  box-shadow: 0 0 0 var(--edge), 0 6px 14px var(--glow);
+  filter: brightness(0.97);
+}
+
+/* Held down through the celebration, so the press reads as "received". */
+.locked {
+  transform: translateY(var(--btn-drop));
+  box-shadow: 0 0 0 var(--edge), 0 6px 14px var(--glow);
+  filter: saturate(0.85);
+  cursor: default;
+}
+
+.button:focus-visible {
+  outline: 4px solid var(--c-indigo-deep);
+  outline-offset: 4px;
+}
+
+/* Little gold ticks either side, echoing the celebration sparks. */
+.sparkle {
+  position: absolute;
+  top: 50%;
+  width: clamp(14px, 4vw, 20px);
+  color: var(--c-gold);
+  pointer-events: none;
+}
+
+.sparkleLeft {
+  left: calc(-1 * clamp(14px, 4.5vw, 24px));
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.sparkleRight {
+  right: calc(-1 * clamp(14px, 4.5vw, 24px));
+  transform: translateY(-50%);
+}
+
+.sparkle svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

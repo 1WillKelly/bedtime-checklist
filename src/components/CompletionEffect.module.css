@@ -1,0 +1,171 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  padding:
+    calc(env(safe-area-inset-top) + var(--sp-5)) var(--gutter)
+    calc(env(safe-area-inset-bottom) + var(--sp-6));
+  color: var(--c-night-ink);
+  /* Covers the whole screen, so stray taps during the lock hit nothing. */
+  touch-action: none;
+  animation: overlayIn 200ms var(--ease-out);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--sp-4);
+  text-align: center;
+}
+
+.headline {
+  font-size: var(--fs-hero);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  animation: riseIn 420ms var(--ease-pop) both;
+}
+
+.starWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(54vw, 30vh, 240px);
+  aspect-ratio: 1;
+}
+
+.hero {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: var(--c-gold);
+  filter: drop-shadow(0 12px 30px rgba(255, 201, 74, 0.4));
+  animation: heroPop 520ms var(--ease-pop) both;
+}
+
+.hero svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ray {
+  position: absolute;
+  width: 4px;
+  height: clamp(16px, 4.5vw, 26px);
+  border-radius: 2px;
+  background: var(--c-gold);
+  transform-origin: 50% calc(min(27vw, 15vh, 120px));
+  opacity: 0;
+  animation: rayOut 620ms var(--ease-out) 120ms both;
+}
+
+.caption {
+  font-size: var(--fs-body);
+  font-weight: 700;
+  color: var(--c-night-ink-soft);
+  animation: riseIn 420ms var(--ease-pop) 120ms both;
+}
+
+/* Informational, not a control — the app advances on its own so the child
+   never has to make a second decision mid-celebration. */
+.nextUp {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  animation: riseIn 420ms var(--ease-pop) 220ms both;
+}
+
+.nextLabel {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--c-night-ink-soft);
+  text-align: left;
+}
+
+.nextTitle {
+  display: block;
+  font-size: var(--fs-body);
+  font-weight: 900;
+  color: var(--c-night-ink);
+}
+
+.progressSlot {
+  width: 100%;
+  max-width: 420px;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes heroPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotate(-18deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12) rotate(4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes rayOut {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(6px) scaleY(0.3);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.85;
+    transform: rotate(var(--angle)) translateY(-10px) scaleY(1);
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * Reduced motion: the reward itself stays — it is the point of the product —
+ * but it arrives by fading rather than by popping and flying.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .ray {
+    display: none;
+  }
+
+  .hero,
+  .headline,
+  .caption,
+  .nextUp {
+    animation: overlayIn 260ms ease-out both;
+  }
+}
