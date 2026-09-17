@@ -48,15 +48,15 @@
   flex: 1;
   /* Without this the list's min-content height pushes the action off-screen. */
   min-height: 0;
-  gap: var(--sp-5);
+  gap: var(--sp-3);
 }
 
 .head {
   display: grid;
   justify-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-1);
   text-align: center;
-  padding-top: var(--sp-5);
+  padding-top: var(--sp-2);
 }
 
 .question {
@@ -76,8 +76,8 @@
 .middle {
   display: grid;
   align-content: start;
-  justify-items: center;
-  gap: var(--sp-5);
+  justify-items: stretch;
+  gap: var(--sp-4);
   /* Scrolls only when the parent's task list is taller than the screen. */
   min-height: 0;
   overflow-y: auto;
@@ -141,41 +141,56 @@
   width: 100%;
   min-height: var(--tap-min);
   border-radius: var(--r-md);
+  background: var(--c-cream);
+  transform: translateY(var(--shift, 0px));
 }
 
-/* Stacked chevrons: a narrow column that still gives each arrow a real target. */
-.reorder {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  flex: 0 0 auto;
+/* Rows opening a gap for the lifted row ease into place; the lifted row
+   itself must track the finger exactly, so it gets no transition. */
+.settling {
+  transition: transform 180ms var(--ease-out);
 }
 
-.arrow {
+.lifted {
+  position: relative;
+  z-index: 2;
+  border-radius: var(--r-md);
+  background: var(--c-white);
+  box-shadow: var(--sh-card);
+  transition: box-shadow 140ms var(--ease-out);
+}
+
+/* The drag handle. touch-action:none is what stops the scroll container
+   stealing a vertical drag on a touchscreen. */
+.grip {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 27px;
+  width: 38px;
+  height: 46px;
   padding: 0;
-  color: var(--c-indigo-deep);
+  color: #b9c2d2;
   border-radius: var(--r-sm);
+  touch-action: none;
+  cursor: grab;
 }
 
-.arrow svg {
-  width: 17px;
-  height: 17px;
+.grip svg {
+  width: 21px;
+  height: 21px;
 }
 
-.arrow:disabled {
-  color: #cdd4e0;
+.grip:active {
+  color: var(--c-indigo);
+  cursor: grabbing;
 }
 
-.arrow:not(:disabled):active {
-  background: rgba(107, 128, 226, 0.14);
-}
-
-.arrow:focus-visible {
+.grip:focus-visible {
   outline: 3px solid var(--c-indigo);
   outline-offset: 1px;
+}
+
+.lifted .grip {
+  color: var(--c-indigo);
 }
 
 /* The on/off target: the whole rest of the row. */

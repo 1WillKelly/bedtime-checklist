@@ -57,7 +57,8 @@ public/        Manifest and icons, copied verbatim into the build
 
 **Setting up** (parents): enter a name — optional, the app uses neutral copy
 without one — then turn steps on or off and use the arrows to put them in your
-order. Everything is saved on the device and can be changed later.
+order by dragging the ⠿ handle. Everything is saved on the device and can be
+changed later.
 
 **During bedtime** (the child): one step fills the screen, with one enormous
 green button. Above it, the progress chain shows every step of the night as its
@@ -90,7 +91,8 @@ leave in plain sight during the routine.
 - **Reduced motion** removes the movement, not the reward or its length — the
   child still needs to see what they finished.
 - **Placeholder art.** Task pictures are emoji on a coloured scene, and the
-  mascot is a hand-drawn SVG. Both are swapped in one place:
-  `src/components/illustrations.tsx` (set `Art` on an entry) and
-  `src/components/Mascot.tsx`. Icons in `public/icons/` are generated
+  mascot is a hand-drawn SVG. Swapping in real artwork is one line per task in
+  `src/components/illustrations.tsx` — see
+  [`docs/ILLUSTRATIONS.md`](docs/ILLUSTRATIONS.md) for the prompts and the
+  checks to run on each render. Icons in `public/icons/` are generated
   placeholders.

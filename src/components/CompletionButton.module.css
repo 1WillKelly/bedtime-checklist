@@ -61,6 +61,18 @@
   font-size: var(--fs-body);
 }
 
+/* Parent screens: same affordance, less furniture. */
+.compact {
+  min-height: 54px;
+  font-size: var(--fs-body);
+  border-radius: var(--r-lg);
+  --btn-drop: 4px;
+}
+
+.compact::after {
+  border-radius: var(--r-lg) var(--r-lg) 40% 40%;
+}
+
 /* Pressed: the slab sinks onto its own edge. */
 .pressed {
   transform: translateY(var(--btn-drop));

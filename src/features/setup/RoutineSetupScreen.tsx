@@ -20,9 +20,7 @@ export function RoutineSetupScreen({ routine, onToggle, onMove, onStart }: Props
       <div className={styles.form}>
         <div className={styles.head}>
           <h1 className={styles.question}>Choose bedtime steps</h1>
-          <p className={styles.hint}>
-            Use the arrows to put them in your order. You can change all of this later.
-          </p>
+          <p className={styles.hint}>Drag &#x283F; to put them in your order.</p>
         </div>
 
         <div className={styles.middle}>
@@ -36,13 +34,11 @@ export function RoutineSetupScreen({ routine, onToggle, onMove, onStart }: Props
           <CompletionButton
             label="Start bedtime"
             variant="nav"
+            size="compact"
             onPress={onStart}
             locked={enabledCount === 0}
           />
-          <p className={styles.note}>
-            During bedtime, tap ↺ in the top corner to start over, or hold the dot beside it
-            for settings.
-          </p>
+          <p className={styles.note}>Tap &#x2699; during bedtime to change any of this.</p>
         </div>
       </div>
     </Screen>

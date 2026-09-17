@@ -49,7 +49,7 @@ const MoonArt: FC<ArtProps> = ({ className }) => (
 export const ILLUSTRATIONS: Record<string, IllustrationSpec> = {
   bath: { glyph: '🛁', tint: '#cbe9ff', accent: '#6fb9ea', alt: 'A bathtub full of bubbles' },
   potty: { glyph: '🚽', tint: '#d6ecc9', accent: '#7cb96c', alt: 'A potty' },
-  teeth: { glyph: '🪥', tint: '#d7e2ff', accent: '#7f97e8', alt: 'A toothbrush' },
+  teeth: { glyph: '🪥', tint: '#e6dcff', accent: '#8b6fd8', alt: 'A violet toothbrush' },
   pajamas: { glyph: '👕', tint: '#ffd9e7', accent: '#f086ad', alt: 'Cosy pyjamas' },
   books: { glyph: '📚', tint: '#ffe3ba', accent: '#f0a34d', alt: 'A stack of books' },
   water: { glyph: '💧', tint: '#cbf1ea', accent: '#4ebaa6', alt: 'A drink of water' },

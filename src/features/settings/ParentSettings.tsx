@@ -1,11 +1,11 @@
 import { useId, useState } from 'react'
 
+import { moveTask } from '../../app/routineMachine'
 import { CompletionButton } from '../../components/CompletionButton'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { RoutineToggleList } from '../../components/RoutineToggleList'
 import { Screen } from '../../components/Screen'
 import type { AppSettings, RoutineItem } from '../../models/types'
-import { moveTask } from '../../app/routineMachine'
 import { cleanName } from '../../utils/copy'
 import styles from './settings.module.css'
 
@@ -33,6 +33,10 @@ const BackIcon = () => (
 
 /**
  * The parent screen, reached by the header's settings button.
+ *
+ * The step list is the main event and gets every row the chrome does not
+ * need — the order of the routine is the thing a parent comes here to change,
+ * so it should not be a strip squeezed between a big field and big buttons.
  *
  * Edits are held locally and committed on Save, so a parent can back out of a
  * change. There is no PIN or account; the protection against a child wandering
@@ -66,42 +70,39 @@ export function ParentSettings({
   return (
     <Screen>
       <div className={styles.sheet}>
-        <div className={styles.top}>
+        <div className={styles.topBar}>
           <button type="button" className={styles.back} onClick={onClose}>
             <BackIcon />
             Back
           </button>
+          <h1 className={styles.heading}>🌙 Settings</h1>
         </div>
 
-        <div className={styles.scroll}>
-          <h1 className={styles.heading}>
-            <span className={styles.headingIcon} aria-hidden="true">
-              🌙
-            </span>
-            Settings
-          </h1>
+        <div className={styles.nameRow}>
+          <label className={styles.nameLabel} htmlFor={nameId}>
+            Child&rsquo;s name
+          </label>
+          <input
+            id={nameId}
+            className={styles.input}
+            type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Optional"
+            autoComplete="off"
+            autoCapitalize="words"
+            autoCorrect="off"
+            spellCheck={false}
+            maxLength={24}
+          />
+        </div>
 
-          <div className={styles.group}>
-            <label className={styles.groupLabel} htmlFor={nameId}>
-              Child&rsquo;s name
-            </label>
-            <input
-              id={nameId}
-              className={styles.input}
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Optional"
-              autoComplete="off"
-              autoCapitalize="words"
-              autoCorrect="off"
-              spellCheck={false}
-              maxLength={24}
-            />
+        <div className={styles.steps}>
+          <div className={styles.stepsHead}>
+            <span className={styles.stepsLabel}>Bedtime steps, in order</span>
+            <span className={styles.stepsHint}>Drag ⠿ to reorder</span>
           </div>
-
-          <div className={styles.group}>
-            <span className={styles.groupLabel}>Bedtime steps</span>
+          <div className={styles.stepsScroll}>
             <RoutineToggleList routine={routine} onToggle={toggle} onMove={move} />
           </div>
         </div>
@@ -113,26 +114,34 @@ export function ParentSettings({
           <CompletionButton
             label="Save"
             variant="nav"
+            size="compact"
             locked={enabledCount === 0}
             onPress={() => onSave(cleanName(name), routine)}
           />
-          <CompletionButton
-            label="Start tonight over"
-            variant="danger"
-            locked={enabledCount === 0}
-            onPress={() => setConfirming('restart')}
-          />
-          <p className={styles.note}>Saves your changes and goes back to the first step.</p>
-          <button type="button" className={styles.reset} onClick={() => setConfirming('erase')}>
-            Erase everything and set up again
-          </button>
+          <div className={styles.minorActions}>
+            <button
+              type="button"
+              className={`${styles.minorButton} ${styles.minorDanger}`}
+              onClick={() => setConfirming('restart')}
+              disabled={enabledCount === 0}
+            >
+              Start tonight over
+            </button>
+            <button
+              type="button"
+              className={`${styles.minorButton} ${styles.minorQuiet}`}
+              onClick={() => setConfirming('erase')}
+            >
+              Erase everything
+            </button>
+          </div>
         </div>
       </div>
 
       {confirming === 'restart' && (
         <ConfirmDialog
           title="Start tonight over?"
-          body="Tonight's stars will be cleared and bedtime goes back to the first step."
+          body="Saves your changes, clears tonight's stars, and goes back to the first step."
           confirmLabel="Start over"
           cancelLabel="Cancel"
           onConfirm={() => {

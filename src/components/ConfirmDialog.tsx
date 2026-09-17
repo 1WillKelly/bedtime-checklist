@@ -56,8 +56,13 @@ export function ConfirmDialog({
         </h2>
         {body && <p className={styles.body}>{body}</p>}
         <div className={styles.actions}>
-          <CompletionButton label={confirmLabel} variant="danger" onPress={onConfirm} />
-          <CompletionButton label={cancelLabel} variant="nav" onPress={onCancel} />
+          <CompletionButton
+            label={confirmLabel}
+            variant="danger"
+            size="compact"
+            onPress={onConfirm}
+          />
+          <CompletionButton label={cancelLabel} variant="nav" size="compact" onPress={onCancel} />
         </div>
       </div>
     </div>

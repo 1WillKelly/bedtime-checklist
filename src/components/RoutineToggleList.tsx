@@ -1,3 +1,6 @@
+import type { CSSProperties } from 'react'
+
+import { useDragReorder } from '../hooks/useDragReorder'
 import type { RoutineItem } from '../models/types'
 import { TaskIllustration } from './TaskIllustration'
 import styles from '../features/setup/setup.module.css'
@@ -5,77 +8,106 @@ import styles from '../features/setup/setup.module.css'
 type Props = {
   routine: RoutineItem[]
   onToggle: (id: string) => void
-  /** Move a task up (-1) or down (+1) the routine. */
+  /** Move a task by `delta` places in the routine. */
   onMove: (id: string, delta: number) => void
 }
 
-const Chevron = ({ up }: { up: boolean }) => (
+const GripIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <path
-      d={up ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6'}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <circle cx="9" cy="6" r="1.7" fill="currentColor" />
+    <circle cx="15" cy="6" r="1.7" fill="currentColor" />
+    <circle cx="9" cy="12" r="1.7" fill="currentColor" />
+    <circle cx="15" cy="12" r="1.7" fill="currentColor" />
+    <circle cx="9" cy="18" r="1.7" fill="currentColor" />
+    <circle cx="15" cy="18" r="1.7" fill="currentColor" />
   </svg>
 )
 
 /**
  * The parent's routine editor, shared by first-run setup and settings.
  *
- * The row itself is the on/off target so it can be hit one-handed; reordering
- * is separate arrow buttons rather than drag, which needs a precise press-hold
- * on a small handle and is unreliable on a phone.
+ * The row is the on/off target so it can be hit one-handed. Reordering is a
+ * drag from the grip on the left; the grip is a real button that also takes
+ * arrow keys, because a drag alone is unreachable by keyboard.
  */
 export function RoutineToggleList({ routine, onToggle, onMove }: Props) {
   const ordered = [...routine].sort((a, b) => a.order - b.order)
+  const { listRef, drag, pitch, handlers } = useDragReorder({
+    onReorder: onMove,
+    itemCount: ordered.length,
+  })
+
+  /**
+   * Rows between the lifted row and its landing slot slide one place to open
+   * the gap, so the list previews the result while the finger is still down.
+   */
+  const shiftFor = (index: number): number => {
+    if (!drag) return 0
+    if (index === drag.fromIndex) return drag.offset
+    const to = drag.fromIndex + drag.delta
+    if (drag.delta > 0 && index > drag.fromIndex && index <= to) return -pitch
+    if (drag.delta < 0 && index < drag.fromIndex && index >= to) return pitch
+    return 0
+  }
 
   return (
-    <ul className={styles.list}>
-      {ordered.map((item, index) => (
-        <li key={item.id} className={`${styles.row} ${item.enabled ? '' : styles.rowOff}`}>
-          <div className={styles.reorder}>
-            <button
-              type="button"
-              className={styles.arrow}
-              onClick={() => onMove(item.id, -1)}
-              disabled={index === 0}
-              aria-label={`Move ${item.title} earlier`}
-            >
-              <Chevron up />
-            </button>
-            <button
-              type="button"
-              className={styles.arrow}
-              onClick={() => onMove(item.id, 1)}
-              disabled={index === ordered.length - 1}
-              aria-label={`Move ${item.title} later`}
-            >
-              <Chevron up={false} />
-            </button>
-          </div>
-
-          <TaskIllustration id={item.illustration} size="chip" className={styles.chip} />
-
-          <button
-            type="button"
-            role="switch"
-            aria-checked={item.enabled}
-            className={styles.rowMain}
-            onClick={() => onToggle(item.id)}
+    <ul className={styles.list} ref={listRef}>
+      {ordered.map((item, index) => {
+        const lifted = drag?.fromIndex === index
+        return (
+          <li
+            key={item.id}
+            className={[
+              styles.row,
+              item.enabled ? '' : styles.rowOff,
+              lifted ? styles.lifted : '',
+              drag && !lifted ? styles.settling : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+            style={{ '--shift': `${shiftFor(index)}px` } as CSSProperties}
           >
-            <span className={styles.rowTitle}>{item.title}</span>
-            <span
-              className={`${styles.switch} ${item.enabled ? styles.switchOn : ''}`}
-              aria-hidden="true"
+            <button
+              type="button"
+              className={styles.grip}
+              aria-label={`Reorder ${item.title}. Drag, or use the up and down arrow keys.`}
+              onPointerDown={(event) => handlers.onPointerDown(event, item.id, index)}
+              onPointerMove={handlers.onPointerMove}
+              onPointerUp={handlers.onPointerUp}
+              onPointerCancel={handlers.onPointerCancel}
+              onKeyDown={(event) => {
+                if (event.key === 'ArrowUp') {
+                  event.preventDefault()
+                  onMove(item.id, -1)
+                } else if (event.key === 'ArrowDown') {
+                  event.preventDefault()
+                  onMove(item.id, 1)
+                }
+              }}
             >
-              <span className={styles.knob} />
-            </span>
-          </button>
-        </li>
-      ))}
+              <GripIcon />
+            </button>
+
+            <TaskIllustration id={item.illustration} size="chip" className={styles.chip} />
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={item.enabled}
+              className={styles.rowMain}
+              onClick={() => onToggle(item.id)}
+            >
+              <span className={styles.rowTitle}>{item.title}</span>
+              <span
+                className={`${styles.switch} ${item.enabled ? styles.switchOn : ''}`}
+                aria-hidden="true"
+              >
+                <span className={styles.knob} />
+              </span>
+            </button>
+          </li>
+        )
+      })}
     </ul>
   )
 }

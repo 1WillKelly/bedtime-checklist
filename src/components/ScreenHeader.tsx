@@ -10,15 +10,17 @@ type Props = {
 }
 
 const SettingsIcon = () => (
+  // Gear outline generated on an 8-tooth polar layout (see the commit that
+  // added it); rounded joins keep the teeth friendly rather than mechanical.
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" strokeWidth="2" />
     <path
-      d="M12 2.8v2.4M12 18.8v2.4M4.5 4.5l1.7 1.7M17.8 17.8l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.5 19.5l1.7-1.7M17.8 6.2l1.7-1.7"
+      d="M12.41 4.21 L14.0 1.69 L17.87 3.3 L17.22 6.2 L17.8 6.78 L20.7 6.13 L22.31 10.0 L19.79 11.59 L19.79 12.41 L22.31 14.0 L20.7 17.87 L17.8 17.22 L17.22 17.8 L17.87 20.7 L14.0 22.31 L12.41 19.79 L11.59 19.79 L10.0 22.31 L6.13 20.7 L6.78 17.8 L6.2 17.22 L3.3 17.87 L1.69 14.0 L4.21 12.41 L4.21 11.59 L1.69 10.0 L3.3 6.13 L6.2 6.78 L6.78 6.2 L6.13 3.3 L10.0 1.69 L11.59 4.21 Z"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
+      strokeWidth="1.8"
+      strokeLinejoin="round"
     />
+    <circle cx="12" cy="12" r="3.3" fill="none" stroke="currentColor" strokeWidth="1.8" />
   </svg>
 )
 

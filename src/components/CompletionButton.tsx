@@ -10,6 +10,8 @@ type Props = {
   /** While locked the button stays visually depressed and ignores input. */
   locked?: boolean
   variant?: 'action' | 'nav' | 'danger'
+  /** `compact` is the parent-screen size; the child's button stays large. */
+  size?: 'large' | 'compact'
   /** Overrides the visible label for assistive tech (e.g. adds the task name). */
   ariaLabel?: string
   /** Gold accent ticks — reserved for the main child-facing action. */
@@ -37,6 +39,7 @@ export function CompletionButton({
   onPress,
   locked = false,
   variant = 'action',
+  size = 'large',
   ariaLabel,
   sparkles = false,
 }: Props) {
@@ -79,6 +82,7 @@ export function CompletionButton({
       className={[
         styles.button,
         styles[variant],
+        size === 'compact' ? styles.compact : '',
         locked ? styles.locked : pressed ? styles.pressed : '',
       ]
         .filter(Boolean)
