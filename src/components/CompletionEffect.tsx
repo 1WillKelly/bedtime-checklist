@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 
+import type { RoutineItem } from '../models/types'
 import { NightSky } from './NightSky'
 import { ProgressIndicator } from './ProgressIndicator'
 import { TaskIllustration } from './TaskIllustration'
@@ -13,7 +14,7 @@ type Props = {
   illustration: string
   /** Title of the task coming next, or null if this was the last one. */
   nextTitle: string | null
-  total: number
+  tasks: RoutineItem[]
   completed: number
 }
 
@@ -57,7 +58,7 @@ export function CompletionEffect({
   taskTitle,
   illustration,
   nextTitle,
-  total,
+  tasks,
   completed,
 }: Props) {
   return (
@@ -66,7 +67,7 @@ export function CompletionEffect({
 
       <div className={styles.progressSlot}>
         <ProgressIndicator
-          total={total}
+          tasks={tasks}
           completed={completed}
           currentIndex={completed}
           celebratingIndex={completed - 1}

@@ -1,55 +1,53 @@
 import type { ReactNode } from 'react'
 
-import { ParentAccessTrigger } from './ParentAccessTrigger'
 import styles from './ScreenHeader.module.css'
 
 type Props = {
   /** The centre slot — the progress chain during the routine, empty after it. */
   children?: ReactNode
-  onRestart: () => void
-  onOpenParentSettings: () => void
+  onOpenSettings: () => void
   tone?: 'day' | 'night'
 }
 
-const RestartIcon = () => (
+const SettingsIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" strokeWidth="2" />
     <path
-      d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4.5h-4.5"
+      d="M12 2.8v2.4M12 18.8v2.4M4.5 4.5l1.7 1.7M17.8 17.8l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.5 19.5l1.7-1.7M17.8 6.2l1.7-1.7"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.4"
+      strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round"
     />
   </svg>
 )
 
 /**
- * The persistent header: restart on the left, progress in the middle, parent
- * settings on the right.
+ * The persistent header: settings on the left, wordless progress in the middle.
  *
- * Both corner controls are small, muted, and pinned to the top of the screen —
- * well out of the thumb path that the big completion button owns. Restart is
- * visible rather than hidden because a parent needs it at any moment; it is
- * safe to leave in view because it always asks before clearing anything.
+ * One visible door to the parent screen, rather than a hidden long-press plus
+ * a separate restart. A single tap only ever *navigates* — it changes nothing —
+ * so a stray toddler tap lands somewhere harmless with a Back button, and
+ * everything destructive lives behind a confirmation on the settings page.
+ * The control is small, muted and pinned to the top corner, well out of the
+ * thumb path that the big completion button owns.
  */
-export function ScreenHeader({ children, onRestart, onOpenParentSettings, tone = 'day' }: Props) {
+export function ScreenHeader({ children, onOpenSettings, tone = 'day' }: Props) {
   return (
     <div className={`${styles.header} ${tone === 'night' ? styles.onNight : ''}`}>
       <button
         type="button"
         className={styles.corner}
-        onClick={onRestart}
-        aria-label="Start bedtime over"
+        onClick={onOpenSettings}
+        aria-label="Parent settings"
       >
-        <RestartIcon />
+        <SettingsIcon />
       </button>
 
       <div className={styles.center}>{children}</div>
 
-      <span className={styles.parentSlot}>
-        <ParentAccessTrigger tone={tone} onOpen={onOpenParentSettings} inline />
-      </span>
+      {/* Balances the settings button so the progress chain stays centred. */}
+      <span className={styles.spacer} aria-hidden="true" />
     </div>
   )
 }

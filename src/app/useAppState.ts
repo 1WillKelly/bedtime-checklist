@@ -124,12 +124,6 @@ export function useAppState() {
     setParentOpen(false)
   }, [])
 
-  /** Start tonight over from the first step, back on the opening screen. */
-  const restartTonight = useCallback(() => {
-    resetSession()
-    setParentOpen(false)
-  }, [resetSession])
-
   const beginBedtime = useCallback(() => {
     setSession((current) => startRoutine(current, tasksRef.current))
   }, [])
@@ -160,7 +154,6 @@ export function useAppState() {
     saveParentSettings,
     resetTonight,
     resetEverything,
-    restartTonight,
     beginBedtime,
     completeCurrentTask,
     advanceAfterCelebration,

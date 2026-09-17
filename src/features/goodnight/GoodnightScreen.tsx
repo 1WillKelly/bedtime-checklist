@@ -7,23 +7,17 @@ import styles from './goodnight.module.css'
 type Props = {
   childName: string
   onOpenParentSettings: () => void
-  onRestart: () => void
 }
 
 /**
  * The end. No score, no streak, no "play again" — the only message is that
- * we are finished and it is time to sleep. The header's two controls are
- * parent-sized and parent-shaped: a restart that asks first, and a long-press
- * for settings. Neither reads as an invitation to keep playing.
+ * we are finished and it is time to sleep. The one control is a muted settings
+ * gear in the corner, which does not read as an invitation to keep playing.
  */
-export function GoodnightScreen({ childName, onOpenParentSettings, onRestart }: Props) {
+export function GoodnightScreen({ childName, onOpenParentSettings }: Props) {
   return (
     <Screen tone="night" skySeed={23} skyMood="calm">
-      <ScreenHeader
-        tone="night"
-        onRestart={onRestart}
-        onOpenParentSettings={onOpenParentSettings}
-      />
+      <ScreenHeader tone="night" onOpenSettings={onOpenParentSettings} />
       <div className={styles.goodnight}>
         <div className={styles.body}>
           <h1 className={styles.title}>{goodnightTitle(childName)}</h1>

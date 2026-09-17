@@ -3,17 +3,17 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 0 var(--sp-2);
+  padding: 0 var(--sp-1);
 }
 
 .node {
   position: relative;
   /* Shrinks rather than overflowing when a routine has many steps. */
   flex: 0 1 auto;
-  min-width: 16px;
+  min-width: 18px;
   display: grid;
   place-items: center;
-  width: clamp(22px, 7.2vw, 34px);
+  width: clamp(24px, 7.8vw, 36px);
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--c-white);
@@ -24,16 +24,17 @@
     transform var(--d-quick) var(--ease-pop);
 }
 
-.node svg {
-  width: 64%;
-  height: 64%;
-  color: transparent;
-  transition: color var(--d-quick) var(--ease-out);
+.glyph {
+  font-size: clamp(12px, 4.1vw, 19px);
+  line-height: 1;
+  /* Upcoming steps are visible but recede, so the eye lands on "now". */
+  opacity: 0.45;
+  transition: opacity var(--d-quick) var(--ease-out);
 }
 
-/* The connecting thread that makes the dots read as one journey. */
+/* The connecting thread that makes the steps read as one journey. */
 .link {
-  flex: 0 1 clamp(4px, 2.6vw, 16px);
+  flex: 0 1 clamp(4px, 2.2vw, 14px);
   min-width: 3px;
   height: 3px;
   border-radius: 2px;
@@ -45,26 +46,31 @@
   background: var(--c-gold);
 }
 
+/* Done: filled gold. Fill plus opacity, so state is never hue alone. */
 .done {
   background: var(--c-gold);
   border-color: var(--c-gold-deep);
 }
 
-.done svg {
-  color: var(--c-white);
+.done .glyph {
+  opacity: 1;
 }
 
 .justDone {
   animation: nodePop var(--d-celebrate) var(--ease-pop);
 }
 
-/* Meaning is not colour-only: the active step also carries a ring. */
+/* Now: a ring, and the picture at full strength. */
 .current {
   border-color: var(--c-indigo);
   box-shadow: 0 0 0 3px rgba(107, 128, 226, 0.18);
 }
 
-/* Night variant, used on the celebration interstitial. */
+.current .glyph {
+  opacity: 1;
+}
+
+/* Night variant, used on the celebration overlay. */
 .onNight .node {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.28);
@@ -83,18 +89,14 @@
   background: var(--c-gold);
 }
 
-.onNight .done svg {
-  color: #7a5200;
-}
-
 @keyframes nodePop {
   0% {
     transform: scale(1);
   }
-  40% {
+  12% {
     transform: scale(1.45);
   }
-  100% {
+  30% {
     transform: scale(1);
   }
 }

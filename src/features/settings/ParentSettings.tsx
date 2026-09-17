@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 
 import { CompletionButton } from '../../components/CompletionButton'
+import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { RoutineToggleList } from '../../components/RoutineToggleList'
 import { Screen } from '../../components/Screen'
 import type { AppSettings, RoutineItem } from '../../models/types'
@@ -31,8 +32,12 @@ const BackIcon = () => (
 )
 
 /**
- * Parent-only. Edits are held locally and committed on Save, so a parent can
- * back out of a change. No PIN, no account — the long-press is the gate.
+ * The parent screen, reached by the header's settings button.
+ *
+ * Edits are held locally and committed on Save, so a parent can back out of a
+ * change. There is no PIN or account; the protection against a child wandering
+ * in is that arriving here changes nothing, and both destructive actions ask
+ * before they act.
  */
 export function ParentSettings({
   settings,
@@ -46,6 +51,7 @@ export function ParentSettings({
     settings.routine.map((item) => ({ ...item })),
   )
   const nameId = useId()
+  const [confirming, setConfirming] = useState<'restart' | 'erase' | null>(null)
 
   const enabledCount = routine.filter((item) => item.enabled).length
 
@@ -114,14 +120,42 @@ export function ParentSettings({
             label="Start tonight over"
             variant="danger"
             locked={enabledCount === 0}
-            onPress={() => onResetRoutine(cleanName(name), routine)}
+            onPress={() => setConfirming('restart')}
           />
           <p className={styles.note}>Saves your changes and goes back to the first step.</p>
-          <button type="button" className={styles.reset} onClick={onResetEverything}>
+          <button type="button" className={styles.reset} onClick={() => setConfirming('erase')}>
             Erase everything and set up again
           </button>
         </div>
       </div>
+
+      {confirming === 'restart' && (
+        <ConfirmDialog
+          title="Start tonight over?"
+          body="Tonight's stars will be cleared and bedtime goes back to the first step."
+          confirmLabel="Start over"
+          cancelLabel="Cancel"
+          onConfirm={() => {
+            setConfirming(null)
+            onResetRoutine(cleanName(name), routine)
+          }}
+          onCancel={() => setConfirming(null)}
+        />
+      )}
+
+      {confirming === 'erase' && (
+        <ConfirmDialog
+          title="Erase everything?"
+          body="The name and your chosen steps are deleted, and setup starts again."
+          confirmLabel="Erase everything"
+          cancelLabel="Cancel"
+          onConfirm={() => {
+            setConfirming(null)
+            onResetEverything()
+          }}
+          onCancel={() => setConfirming(null)}
+        />
+      )}
     </Screen>
   )
 }

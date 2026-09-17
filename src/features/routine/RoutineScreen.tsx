@@ -24,8 +24,6 @@ type Props = {
   /** Called when the celebration ends and the routine should advance. */
   onCelebrationEnd: () => void
   onOpenParentSettings: () => void
-  /** Restart tonight from the first step (already confirmed by the caller). */
-  onRestart: () => void
 }
 
 /**
@@ -51,7 +49,6 @@ export function RoutineScreen({
   onComplete,
   onCelebrationEnd,
   onOpenParentSettings,
-  onRestart,
 }: Props) {
   const [stage, setStage] = useState<Stage>('idle')
   /** Snapshot of the task turning away, kept only for the length of the slide. */
@@ -129,9 +126,9 @@ export function RoutineScreen({
   return (
     <Screen>
       <div className={styles.routine}>
-        <ScreenHeader onRestart={onRestart} onOpenParentSettings={onOpenParentSettings}>
+        <ScreenHeader onOpenSettings={onOpenParentSettings}>
           <ProgressIndicator
-            total={tasks.length}
+            tasks={tasks}
             completed={completedCount}
             currentIndex={currentIndex}
           />
@@ -181,7 +178,7 @@ export function RoutineScreen({
           taskTitle={task.title}
           illustration={task.illustration}
           nextTitle={nextTask ? nextTask.title : null}
-          total={tasks.length}
+          tasks={tasks}
           completed={completedCount}
         />
       )}

@@ -60,20 +60,21 @@ without one — then turn steps on or off and use the arrows to put them in your
 order. Everything is saved on the device and can be changed later.
 
 **During bedtime** (the child): one step fills the screen, with one enormous
-green button. Finishing a step plays a five-second celebration featuring the
-step they just did, then the next step slides in.
-
-The header carries the two parent controls, both deliberately small, muted and
-at the top of the screen — away from the thumb path the big button owns:
+green button. Above it, the progress chain shows every step of the night as its
+own picture — finished ones filled gold, the current one ringed, the rest
+waiting — so a pre-reader can see what is coming next. Finishing a step plays a
+five-second celebration featuring the step they just did, then the next step
+slides in.
 
 | Control | What it does |
 | --- | --- |
-| ↺ (top left) | Start tonight over. Always asks first, so a stray tap is harmless. |
-| ● (top right) | Hold for ~1.5s to open parent settings. |
+| ⚙ (top left) | Opens parent settings. A single tap only navigates — it changes nothing. |
 | "Already did it" | Marks the current step done without the celebration — for a step that happened before the app was opened. |
 
 Parent settings holds the name, the step list and its order, "Start tonight
-over", and a full erase that returns to first-run setup.
+over", and a full erase that returns to first-run setup. Both destructive
+actions ask before they act, which is what makes the settings button safe to
+leave in plain sight during the routine.
 
 ## Notes
 
