@@ -2,6 +2,7 @@
   display: grid;
   grid-template-rows: 1fr auto;
   flex: 1;
+  min-height: 0;
   gap: var(--sp-5);
   text-align: center;
   animation: settle 1200ms var(--ease-out) both;

@@ -40,11 +40,13 @@ export function NightSky({ mood = 'awake', seed = 7 }: Props) {
     [seed],
   )
 
+  // Kept to the upper band: screen copy is vertically centred, and a gold star
+  // sitting behind a headline reads as clutter rather than atmosphere.
   const bigStars = useMemo(
     () =>
-      Array.from({ length: 5 }, (_, index) => ({
-        left: 6 + rand(seed, index, 5) * 84,
-        top: 4 + rand(seed, index, 6) * 62,
+      Array.from({ length: 4 }, (_, index) => ({
+        left: 6 + rand(seed, index, 5) * 82,
+        top: 4 + rand(seed, index, 6) * 30,
         size: 14 + rand(seed, index, 7) * 18,
         delay: rand(seed, index, 8) * 5,
       })),

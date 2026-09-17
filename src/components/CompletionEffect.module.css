@@ -20,7 +20,8 @@
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: var(--sp-4);
+  /* Wide enough that the ray burst never lands on the headline or caption. */
+  gap: clamp(1.5rem, 5vh, 2.75rem);
   text-align: center;
 }
 
@@ -35,8 +36,11 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: min(54vw, 30vh, 240px);
+  width: var(--star-size);
   aspect-ratio: 1;
+  --star-size: min(54vw, 30vh, 240px);
+  /* Where the rays land: just outside the star's silhouette. */
+  --ray-radius: calc(var(--star-size) * 0.58);
 }
 
 .hero {
@@ -56,11 +60,12 @@
 
 .ray {
   position: absolute;
+  top: 50%;
+  left: 50%;
   width: 4px;
-  height: clamp(16px, 4.5vw, 26px);
+  height: clamp(14px, 3.8vw, 22px);
   border-radius: 2px;
   background: var(--c-gold);
-  transform-origin: 50% calc(min(27vw, 15vh, 120px));
   opacity: 0;
   animation: rayOut 620ms var(--ease-out) 120ms both;
 }
@@ -131,14 +136,16 @@
 @keyframes rayOut {
   0% {
     opacity: 0;
-    transform: rotate(var(--angle)) translateY(6px) scaleY(0.3);
+    transform: translate(-50%, -50%) rotate(var(--angle))
+      translateY(calc(-0.62 * var(--ray-radius))) scaleY(0.3);
   }
   45% {
     opacity: 1;
   }
   100% {
-    opacity: 0.85;
-    transform: rotate(var(--angle)) translateY(-10px) scaleY(1);
+    opacity: 0.9;
+    transform: translate(-50%, -50%) rotate(var(--angle))
+      translateY(calc(-1 * var(--ray-radius))) scaleY(1);
   }
 }
 

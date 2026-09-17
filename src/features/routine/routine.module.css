@@ -3,6 +3,7 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   flex: 1;
+  min-height: 0;
   gap: var(--sp-4);
   text-align: center;
 }
@@ -59,7 +60,8 @@
 }
 
 .progressRow {
-  padding: var(--sp-2) 0 var(--sp-1);
+  /* Inset symmetrically so the chain never runs under the parent-access dot. */
+  padding: var(--sp-2) 44px var(--sp-1);
 }
 
 .stage {
@@ -74,9 +76,11 @@
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-rows: 1fr auto;
-  place-items: center;
-  gap: var(--sp-4);
+  /* Picture and label travel together as one block, centred in the stage. */
+  grid-template-rows: auto auto;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(1rem, 3.5vh, 2rem);
   padding: var(--sp-2) 0;
 }
 

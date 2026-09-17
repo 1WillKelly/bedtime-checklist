@@ -59,13 +59,13 @@
 }
 
 .small {
-  width: min(18vw, 64px);
+  width: min(13vw, 46px);
   box-shadow: none;
   border-radius: 34% 66% 40% 60% / 58% 42% 58% 42%;
 }
 
 .small .glyph {
-  font-size: min(9vw, 32px);
+  font-size: min(6.5vw, 24px);
   filter: none;
 }
 

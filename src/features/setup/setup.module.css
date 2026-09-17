@@ -3,6 +3,7 @@
   display: grid;
   grid-template-rows: 1fr auto;
   flex: 1;
+  min-height: 0;
   gap: var(--sp-5);
   text-align: center;
 }
@@ -45,6 +46,8 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   flex: 1;
+  /* Without this the list's min-content height pushes the action off-screen. */
+  min-height: 0;
   gap: var(--sp-5);
 }
 
