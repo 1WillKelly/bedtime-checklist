@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 
+import { useArtStyle } from './ArtStyleContext'
 import styles from './TaskIllustration.module.css'
 import { getIllustration } from './illustrations'
 
@@ -16,11 +17,14 @@ type Props = {
 
 /**
  * Renders a task's artwork. Consumers never touch the registry directly, so
- * swapping emoji placeholders for real SVG/PNG art is a registry-only change.
+ * swapping artwork is a registry-only change, and the drawn/emoji preference
+ * is read here rather than passed down through every screen.
  */
 export function TaskIllustration({ id, size = 'hero', className }: Props) {
+  const artStyle = useArtStyle()
   const spec = getIllustration(id)
-  const Art = spec.Art
+  // Emoji is always the fallback, so a task with no drawn art still renders.
+  const Art = artStyle === 'drawn' ? spec.Art : undefined
 
   return (
     <div

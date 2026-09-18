@@ -46,6 +46,7 @@ BASE_PATH=/ npm run build
 src/
   app/         App shell, routine state machine, persisted app state
   components/  Shared UI (night sky, mascot, progress, big tap button)
+    art/       Hand-drawn SVG illustration per routine step
   features/    Screens grouped by flow: setup, routine, goodnight, settings
   hooks/       useLongPress (the parent-settings gesture)
   models/      Types and the default routine
@@ -72,6 +73,11 @@ slides in.
 | ⚙ (top left) | Opens parent settings. A single tap only navigates — it changes nothing. |
 | "Already did it" | Marks the current step done without the celebration — for a step that happened before the app was opened. |
 
+**Step artwork** is a toggle in settings, `Drawn` or `Emoji`. Drawn is the
+default: hand-authored inline SVG, one component per step, each with a small
+ambient animation. Emoji is the fallback and needs no assets. The choice
+applies immediately, so the step list underneath the toggle previews it.
+
 Parent settings holds the name, the step list and its order, "Start tonight
 over", and a full erase that returns to first-run setup. Both destructive
 actions ask before they act, which is what makes the settings button safe to
@@ -90,9 +96,17 @@ leave in plain sight during the routine.
   back, parsing the unit (browsers normalise `5000ms` to `5s`).
 - **Reduced motion** removes the movement, not the reward or its length — the
   child still needs to see what they finished.
-- **Placeholder art.** Task pictures are emoji on a coloured scene, and the
-  mascot is a hand-drawn SVG. Swapping in real artwork is one line per task in
-  `src/components/illustrations.tsx` — see
-  [`docs/ILLUSTRATIONS.md`](docs/ILLUSTRATIONS.md) for the prompts and the
-  checks to run on each render. Icons in `public/icons/` are generated
-  placeholders.
+- **Artwork.** Every step carries both a drawn SVG component
+  (`src/components/art/`) and an emoji glyph, selected by the settings toggle.
+  The glyph is always the fallback and is what the small progress-chain nodes
+  use at either setting — at 24-36px a glyph beats a shrunken drawing.
+  `src/components/illustrations.tsx` is the single registry both modes read.
+  See [`docs/ILLUSTRATIONS.md`](docs/ILLUSTRATIONS.md) for the drawing
+  contract and the generated-image route. Icons in `public/icons/` are
+  generated placeholders.
+- **SVG animation** lives in `src/components/art/art.module.css`, not inside
+  the SVG fragments — an inline fragment has to stay self-contained. Two rules
+  when adding to it: pair every motion class with `.anim` (which sets
+  `transform-box: fill-box`, without which a transform is relative to the
+  viewBox origin and the shape flies off-canvas), and mark the element
+  `data-ambient` so reduced motion strips it.

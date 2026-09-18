@@ -87,6 +87,8 @@ export function loadSettings(): AppSettings {
       child: { name: cleanName(typeof child.name === 'string' ? child.name : '') },
       routine: mergeRoutine(parsed.routine),
       setupComplete: parsed.setupComplete === true,
+      // Settings saved before the drawn artwork existed have no artStyle.
+      artStyle: parsed.artStyle === 'emoji' ? 'emoji' : 'drawn',
     }
   } catch {
     return fallback

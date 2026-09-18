@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { createDefaultSettings } from '../models/defaultRoutine'
-import type { AppSettings, RoutineItem, RoutineSession } from '../models/types'
+import type { AppSettings, ArtStyle, RoutineItem, RoutineSession } from '../models/types'
 import {
   beginCompletion,
   canResume,
@@ -60,12 +60,8 @@ export function useAppState() {
 
   const completeSetup = useCallback(
     (name: string, routine: RoutineItem[]) => {
-      const nextSettings: AppSettings = {
-        child: { name },
-        routine,
-        setupComplete: true,
-      }
-      setSettings(nextSettings)
+      // Functional update so fields setup does not touch — artStyle — survive.
+      setSettings((current) => ({ ...current, child: { name }, routine, setupComplete: true }))
       resetSession(selectActiveTasks(routine))
     },
     [resetSession],
@@ -82,6 +78,14 @@ export function useAppState() {
 
   const reorderTask = useCallback((id: string, delta: number) => {
     setSettings((current) => ({ ...current, routine: moveTask(current.routine, id, delta) }))
+  }, [])
+
+  /**
+   * Applied immediately rather than on Save: the settings list below the
+   * toggle shows the same artwork, so it doubles as a live preview.
+   */
+  const setArtStyle = useCallback((artStyle: ArtStyle) => {
+    setSettings((current) => ({ ...current, artStyle }))
   }, [])
 
   const setChildName = useCallback((name: string) => {
@@ -150,6 +154,7 @@ export function useAppState() {
     completeSetup,
     toggleTask,
     reorderTask,
+    setArtStyle,
     setChildName,
     saveParentSettings,
     resetTonight,

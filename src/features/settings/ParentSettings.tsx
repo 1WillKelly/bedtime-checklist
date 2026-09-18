@@ -5,7 +5,7 @@ import { CompletionButton } from '../../components/CompletionButton'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { RoutineToggleList } from '../../components/RoutineToggleList'
 import { Screen } from '../../components/Screen'
-import type { AppSettings, RoutineItem } from '../../models/types'
+import type { AppSettings, ArtStyle, RoutineItem } from '../../models/types'
 import { cleanName } from '../../utils/copy'
 import styles from './settings.module.css'
 
@@ -13,10 +13,17 @@ type Props = {
   settings: AppSettings
   onSave: (name: string, routine: RoutineItem[]) => void
   onResetRoutine: (name: string, routine: RoutineItem[]) => void
+  /** Applied immediately — the list below doubles as a live preview. */
+  onArtStyleChange: (style: ArtStyle) => void
   /** Wipe the name and routine and return to first-run setup. */
   onResetEverything: () => void
   onClose: () => void
 }
+
+const ART_CHOICES: Array<{ value: ArtStyle; label: string }> = [
+  { value: 'drawn', label: 'Drawn' },
+  { value: 'emoji', label: 'Emoji' },
+]
 
 const BackIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -47,6 +54,7 @@ export function ParentSettings({
   settings,
   onSave,
   onResetRoutine,
+  onArtStyleChange,
   onResetEverything,
   onClose,
 }: Props) {
@@ -55,6 +63,7 @@ export function ParentSettings({
     settings.routine.map((item) => ({ ...item })),
   )
   const nameId = useId()
+  const artLabelId = useId()
   const [confirming, setConfirming] = useState<'restart' | 'erase' | null>(null)
 
   const enabledCount = routine.filter((item) => item.enabled).length
@@ -78,23 +87,47 @@ export function ParentSettings({
           <h1 className={styles.heading}>🌙 Settings</h1>
         </div>
 
-        <div className={styles.nameRow}>
-          <label className={styles.nameLabel} htmlFor={nameId}>
-            Child&rsquo;s name
-          </label>
-          <input
-            id={nameId}
-            className={styles.input}
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Optional"
-            autoComplete="off"
-            autoCapitalize="words"
-            autoCorrect="off"
-            spellCheck={false}
-            maxLength={24}
-          />
+        <div className={styles.fields}>
+          <div className={styles.nameRow}>
+            <label className={styles.nameLabel} htmlFor={nameId}>
+              Child&rsquo;s name
+            </label>
+            <input
+              id={nameId}
+              className={styles.input}
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Optional"
+              autoComplete="off"
+              autoCapitalize="words"
+              autoCorrect="off"
+              spellCheck={false}
+              maxLength={24}
+            />
+          </div>
+
+          <div className={styles.nameRow}>
+            <span className={styles.nameLabel} id={artLabelId}>
+              Step artwork
+            </span>
+            <div className={styles.segmented} role="radiogroup" aria-labelledby={artLabelId}>
+              {ART_CHOICES.map((choice) => (
+                <button
+                  key={choice.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={settings.artStyle === choice.value}
+                  className={`${styles.segment} ${
+                    settings.artStyle === choice.value ? styles.segmentOn : ''
+                  }`}
+                  onClick={() => onArtStyleChange(choice.value)}
+                >
+                  {choice.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className={styles.steps}>

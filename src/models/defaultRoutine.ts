@@ -20,5 +20,6 @@ export function createDefaultSettings(): AppSettings {
     child: { name: '' },
     routine: DEFAULT_ROUTINE.map((item) => ({ ...item })),
     setupComplete: false,
+    artStyle: 'drawn',
   }
 }

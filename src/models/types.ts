@@ -8,6 +8,9 @@ export type RoutineItem = {
   order: number
 }
 
+/** Which artwork the task pictures use. */
+export type ArtStyle = 'drawn' | 'emoji'
+
 export type ChildProfile = {
   /** May be an empty string — the app falls back to neutral copy. */
   name: string
@@ -18,6 +21,7 @@ export type AppSettings = {
   child: ChildProfile
   routine: RoutineItem[]
   setupComplete: boolean
+  artStyle: ArtStyle
 }
 
 export type SessionPhase = 'start' | 'routine' | 'goodnight'

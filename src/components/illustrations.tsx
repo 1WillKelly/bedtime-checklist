@@ -1,61 +1,52 @@
 import type { FC } from 'react'
 
+import {
+  BathArt,
+  PottyArt,
+  TeethArt,
+  PajamasArt,
+  BooksArt,
+  WaterArt,
+  SongArt,
+  GoodnightArt,
+} from './art'
+import type { ArtProps } from './art/types'
+
 /**
- * The art registry.
+ * The art registry: one entry per routine step.
  *
- * Placeholder artwork is an emoji glyph on a hand-shaped colour scene. To
- * replace a placeholder with real art, set `Art` on that entry to a component
- * that renders an <svg> (or an <img> pointing at src/assets/...). Nothing else
- * in the app needs to change — every screen goes through <TaskIllustration />.
+ * Each entry carries both an emoji glyph and a hand-drawn SVG component. The
+ * parent chooses between them in settings (see ArtStyleContext); the glyph is
+ * always the fallback, so a step with no drawn art still renders, and it is
+ * what the small progress-chain nodes use at any setting — at 24-36px a glyph
+ * reads better than a shrunken drawing.
  */
 
-export type ArtProps = { className?: string }
+export type { ArtProps }
 
 export type IllustrationSpec = {
-  /** Placeholder glyph, used when no `Art` component is supplied. */
+  /** Shown in emoji mode, in the progress chain, and as the fallback. */
   glyph: string
-  /** Scene background tint. */
+  /** Scene background tint. The drawn art is composed against this. */
   tint: string
   /** Accent used for the scene's decorative shapes. */
   accent: string
   /** Described to screen readers in place of the picture. */
   alt: string
-  /** Optional real artwork. Takes priority over `glyph`. */
+  /** Hand-drawn artwork, used in "drawn" mode. */
   Art?: FC<ArtProps>
 }
 
-/** Example of a custom SVG replacing a placeholder glyph. */
-const MoonArt: FC<ArtProps> = ({ className }) => (
-  <svg
-    className={className}
-    viewBox="0 0 120 120"
-    role="presentation"
-    focusable="false"
-    aria-hidden="true"
-  >
-    <path
-      d="M78 12a48 48 0 1 0 30 84 40 40 0 0 1-30-84Z"
-      fill="#ffdf8a"
-      stroke="#e9b93f"
-      strokeWidth="4"
-      strokeLinejoin="round"
-    />
-    <circle cx="66" cy="44" r="6" fill="#efc86a" opacity="0.7" />
-    <circle cx="82" cy="72" r="4" fill="#efc86a" opacity="0.6" />
-    <circle cx="58" cy="76" r="3" fill="#efc86a" opacity="0.5" />
-  </svg>
-)
-
 export const ILLUSTRATIONS: Record<string, IllustrationSpec> = {
-  bath: { glyph: '🛁', tint: '#cbe9ff', accent: '#6fb9ea', alt: 'A bathtub full of bubbles' },
-  potty: { glyph: '🚽', tint: '#d6ecc9', accent: '#7cb96c', alt: 'A potty' },
-  teeth: { glyph: '🪥', tint: '#e6dcff', accent: '#8b6fd8', alt: 'A violet toothbrush' },
-  pajamas: { glyph: '👕', tint: '#ffd9e7', accent: '#f086ad', alt: 'Cosy pyjamas' },
-  books: { glyph: '📚', tint: '#ffe3ba', accent: '#f0a34d', alt: 'A stack of books' },
-  water: { glyph: '💧', tint: '#cbf1ea', accent: '#4ebaa6', alt: 'A drink of water' },
-  song: { glyph: '🎵', tint: '#e6dbff', accent: '#9b80e8', alt: 'A music note' },
-  goodnight: { glyph: '🌙', tint: '#d3cff3', accent: '#7a6bcd', alt: 'A sleepy moon', Art: MoonArt },
-  moon: { glyph: '🌙', tint: '#d3cff3', accent: '#7a6bcd', alt: 'A sleepy moon', Art: MoonArt },
+  bath: { glyph: '🛁', tint: '#cbe9ff', accent: '#6fb9ea', alt: 'A bathtub full of bubbles', Art: BathArt },
+  potty: { glyph: '🚽', tint: '#d6ecc9', accent: '#7cb96c', alt: 'A potty', Art: PottyArt },
+  teeth: { glyph: '🪥', tint: '#e6dcff', accent: '#8b6fd8', alt: 'A violet toothbrush', Art: TeethArt },
+  pajamas: { glyph: '👕', tint: '#ffd9e7', accent: '#f086ad', alt: 'Cosy pyjamas', Art: PajamasArt },
+  books: { glyph: '📚', tint: '#ffe3ba', accent: '#f0a34d', alt: 'A stack of books', Art: BooksArt },
+  water: { glyph: '💧', tint: '#cbf1ea', accent: '#4ebaa6', alt: 'A drink of water', Art: WaterArt },
+  song: { glyph: '🎵', tint: '#e6dbff', accent: '#9b80e8', alt: 'A music note', Art: SongArt },
+  goodnight: { glyph: '🌙', tint: '#d3cff3', accent: '#7a6bcd', alt: 'A sleepy moon', Art: GoodnightArt },
+  moon: { glyph: '🌙', tint: '#d3cff3', accent: '#7a6bcd', alt: 'A sleepy moon', Art: GoodnightArt },
   generic: { glyph: '⭐️', tint: '#ffe8c2', accent: '#efb44d', alt: 'A star' },
 }
 

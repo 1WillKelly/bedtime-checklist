@@ -1,0 +1,122 @@
+/*
+ * Shared motion vocabulary for the hand-drawn task illustrations.
+ *
+ * An inline SVG fragment must stay self-contained — no <style> inside it — so
+ * every animation lives here and is applied to SVG children by class name.
+ *
+ * Two rules for anything added here:
+ *
+ * 1. Transforms on an SVG child rotate and scale about the *user-space* origin
+ *    (0,0 — the top-left of the viewBox), not the shape. `transform-box:
+ *    fill-box` re-anchors them to the shape's own box, which is almost always
+ *    what a drawing wants. Forgetting it sends the shape flying off-canvas.
+ * 2. Mark the element `data-ambient` in the component. global.css strips
+ *    animation from those under prefers-reduced-motion, and everything in this
+ *    file is decorative ambience rather than feedback, so all of it qualifies.
+ */
+
+.anim {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* Gentle vertical bob — floating objects, drifting notes. */
+.bob {
+  animation: artBob 4.2s ease-in-out infinite;
+}
+
+/* Slow rock — anything hanging, leaning or being held. */
+.sway {
+  animation: artSway 5.4s ease-in-out infinite;
+}
+
+/* Opacity pulse — sparkles, highlights, stars. */
+.twinkle {
+  animation: artTwinkle 2.6s ease-in-out infinite;
+}
+
+/* Drift upward and fade — bubbles, steam, music leaving a source. */
+.rise {
+  animation: artRise 3.4s ease-in-out infinite;
+}
+
+/* Breathing scale — a whole subject that should feel alive. */
+.pulse {
+  animation: artPulse 3.6s ease-in-out infinite;
+}
+
+/* Fall and fade — a droplet leaving a tap or a glass. */
+.drip {
+  animation: artDrip 2.8s ease-in infinite;
+}
+
+@keyframes artBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+
+@keyframes artSway {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes artTwinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes artRise {
+  0% {
+    opacity: 0;
+    transform: translateY(2px) scale(0.7);
+  }
+  25% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-16px) scale(1.05);
+  }
+}
+
+@keyframes artPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes artDrip {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(12px) scale(1);
+  }
+}

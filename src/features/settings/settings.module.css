@@ -48,7 +48,12 @@
   white-space: nowrap;
 }
 
-/* ---- Name: one compact row ---- */
+/* ---- Compact fields: name and artwork, above the list ---- */
+.fields {
+  display: grid;
+  gap: var(--sp-2);
+}
+
 .nameRow {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -78,6 +83,40 @@
 .input:focus {
   outline: none;
   border-color: var(--c-indigo);
+}
+
+/* Segmented control — two mutually exclusive display choices. */
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--c-cream-deep);
+}
+
+.segment {
+  min-height: 40px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-small);
+  font-weight: 800;
+  color: var(--text-soft);
+  transition:
+    background-color var(--d-press) var(--ease-out),
+    color var(--d-press) var(--ease-out);
+}
+
+.segmentOn {
+  background: var(--c-white);
+  color: var(--c-ink);
+  box-shadow: 0 1px 3px rgba(30, 47, 82, 0.18);
+}
+
+.segment:focus-visible {
+  outline: 3px solid var(--c-indigo);
+  outline-offset: 2px;
 }
 
 /* ---- Steps: the first-class content ---- */
