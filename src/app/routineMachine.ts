@@ -99,6 +99,41 @@ export function finishCompletion(
   }
 }
 
+/**
+ * Jump straight to a step, from the progress chain or the Back button.
+ *
+ * Progress is positional: everything before the step counts as done and
+ * everything from it on does not, so the chain always reads as one unbroken
+ * gold run up to "now" — however the parent got there.
+ */
+export function goToStep(
+  session: RoutineSession,
+  tasks: RoutineItem[],
+  index: number,
+): RoutineSession {
+  if (session.transitioning) return session
+  if (session.phase !== 'routine') return session
+  if (index < 0 || index >= tasks.length || index === session.currentIndex) return session
+
+  return {
+    ...session,
+    currentIndex: index,
+    completedIds: tasks.slice(0, index).map((task) => task.id),
+    updatedAt: Date.now(),
+  }
+}
+
+/** Back one step; from the first step, back out to the opening screen. */
+export function stepBack(session: RoutineSession, tasks: RoutineItem[]): RoutineSession {
+  if (session.transitioning) return session
+  if (session.phase !== 'routine') return session
+
+  if (session.currentIndex === 0) {
+    return { ...session, phase: 'start', completedIds: [], updatedAt: Date.now() }
+  }
+  return goToStep(session, tasks, session.currentIndex - 1)
+}
+
 /** Parent tapped Start on the opening screen. */
 export function startRoutine(
   session: RoutineSession,

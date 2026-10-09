@@ -70,8 +70,10 @@ slides in.
 
 | Control | What it does |
 | --- | --- |
-| ⚙ (top left) | Opens parent settings. A single tap only navigates — it changes nothing. |
-| "Already did it" | Marks the current step done without the celebration — for a step that happened before the app was opened. |
+| "Settings" (top left) | Opens parent settings. A single tap only navigates — it changes nothing. |
+| A step in the chain | Jumps straight to that step. Everything before it counts as done; everything from it on does not. |
+| "Next" | Marks the current step done without the celebration — for a step that happened before the app was opened. |
+| "Back" | Goes back one step and un-does it. On the first step, returns to the opening screen. |
 
 **Step artwork** is a toggle in settings, `Drawn` or `Emoji`. Drawn is the
 default: hand-authored inline SVG, one component per step, each with a small

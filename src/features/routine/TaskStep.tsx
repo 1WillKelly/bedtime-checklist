@@ -6,6 +6,8 @@ type Props = {
   task: RoutineItem
   /** `out` is the page turning away, `in` is the one arriving. */
   motion?: 'in' | 'out' | 'none'
+  /** Going back turns the page the other way, so the motion matches the jump. */
+  direction?: 'forward' | 'back'
 }
 
 /**
@@ -13,13 +15,14 @@ type Props = {
  * of the routine screen that animates — progress and the button stay put, so
  * the child's target never moves.
  */
-export function TaskStep({ task, motion = 'none' }: Props) {
+export function TaskStep({ task, motion = 'none', direction = 'forward' }: Props) {
+  const back = direction === 'back'
   return (
     <div
       className={[
         styles.card,
-        motion === 'out' ? styles.slideOut : '',
-        motion === 'in' ? styles.slideIn : '',
+        motion === 'out' ? (back ? styles.slideOutBack : styles.slideOut) : '',
+        motion === 'in' ? (back ? styles.slideInBack : styles.slideIn) : '',
       ]
         .filter(Boolean)
         .join(' ')}

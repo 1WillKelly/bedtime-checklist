@@ -7,10 +7,12 @@ import {
   canResume,
   createSession,
   finishCompletion,
+  goToStep,
   moveTask,
   routineSignature,
   selectActiveTasks,
   startRoutine,
+  stepBack,
 } from './routineMachine'
 import {
   clearSession,
@@ -142,6 +144,15 @@ export function useAppState() {
     setSession((current) => finishCompletion(current, tasksRef.current))
   }, [])
 
+  /** Tap on a step in the progress chain. */
+  const jumpToTask = useCallback((index: number) => {
+    setSession((current) => goToStep(current, tasksRef.current, index))
+  }, [])
+
+  const goBack = useCallback(() => {
+    setSession((current) => stepBack(current, tasksRef.current))
+  }, [])
+
   return {
     settings,
     tasks,
@@ -162,5 +173,7 @@ export function useAppState() {
     beginBedtime,
     completeCurrentTask,
     advanceAfterCelebration,
+    jumpToTask,
+    goBack,
   }
 }

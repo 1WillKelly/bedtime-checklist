@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import type { ReactNode } from 'react'
 
 import type { RoutineItem } from '../models/types'
 import { getIllustration } from './illustrations'
@@ -13,6 +13,10 @@ type Props = {
   /** Index that just completed, so exactly one node pops. */
   celebratingIndex?: number | null
   tone?: 'day' | 'night'
+  /** Makes every step a button that jumps straight to it. */
+  onSelect?: (index: number) => void
+  /** Steps are not tappable while a page turn is in flight. */
+  locked?: boolean
 }
 
 /**
@@ -23,6 +27,10 @@ type Props = {
  * "what's coming next?" as well as "how far along are we?" — a pre-reader can
  * look ahead and see the books before the books arrive. Deliberately never
  * says "3 of 8".
+ *
+ * With `onSelect`, each step is a tap target that jumps to it. The whole cell
+ * is the target, not just the circle, so the chain is one continuous strip of
+ * buttons with no dead gaps between them.
  */
 export function ProgressIndicator({
   tasks,
@@ -30,21 +38,30 @@ export function ProgressIndicator({
   currentIndex,
   celebratingIndex = null,
   tone = 'day',
+  onSelect,
+  locked = false,
 }: Props) {
+  const label = `${completed} of ${tasks.length} bedtime steps done`
+
   return (
     <div
       className={`${styles.track} ${tone === 'night' ? styles.onNight : ''}`}
-      role="progressbar"
-      aria-valuemin={0}
-      aria-valuemax={tasks.length}
-      aria-valuenow={completed}
-      aria-label={`${completed} of ${tasks.length} bedtime steps done`}
+      {...(onSelect
+        ? { role: 'group', 'aria-label': label }
+        : {
+            role: 'progressbar',
+            'aria-valuemin': 0,
+            'aria-valuemax': tasks.length,
+            'aria-valuenow': completed,
+            'aria-label': label,
+          })}
     >
       {tasks.map((task, index) => {
         const done = index < completed
         const isCurrent = !done && index === currentIndex
-        return (
-          <Fragment key={task.id}>
+
+        const content: ReactNode = (
+          <>
             {index > 0 && (
               <span className={`${styles.link} ${done ? styles.linkDone : ''}`} aria-hidden="true" />
             )}
@@ -58,11 +75,32 @@ export function ProgressIndicator({
                 .filter(Boolean)
                 .join(' ')}
               aria-hidden="true"
-              title={task.title}
             >
               <span className={styles.glyph}>{getIllustration(task.illustration).glyph}</span>
             </span>
-          </Fragment>
+          </>
+        )
+
+        if (!onSelect) {
+          return (
+            <span key={task.id} className={styles.step} aria-hidden="true" title={task.title}>
+              {content}
+            </span>
+          )
+        }
+
+        return (
+          <button
+            key={task.id}
+            type="button"
+            className={`${styles.step} ${styles.tappable}`}
+            onClick={() => onSelect(index)}
+            disabled={locked}
+            aria-current={isCurrent ? 'step' : undefined}
+            aria-label={`${task.title}${done ? ', done' : ''}`}
+          >
+            {content}
+          </button>
         )
       })}
     </div>

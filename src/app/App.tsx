@@ -9,9 +9,9 @@ import { WelcomeScreen } from '../features/setup/WelcomeScreen'
 import { ParentSettings } from '../features/settings/ParentSettings'
 
 /**
- * Screen router. There is intentionally no URL routing, history or back
- * button: during the routine the only way forward is the big button, and the
- * only way out is the settings control in the corner.
+ * Screen router. There is intentionally no URL routing or browser history:
+ * moving around the routine is the routine screen's own Back/Next and step
+ * chain, and the only way out is the Settings button at the top.
  */
 export function App() {
   const app = useAppState()
@@ -83,6 +83,8 @@ export function App() {
         childName={settings.child.name}
         onComplete={app.completeCurrentTask}
         onCelebrationEnd={app.advanceAfterCelebration}
+        onGoToTask={app.jumpToTask}
+        onBack={app.goBack}
         onOpenParentSettings={app.openParent}
       />
     )

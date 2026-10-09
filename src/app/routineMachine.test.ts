@@ -7,10 +7,12 @@ import {
   canResume,
   createSession,
   finishCompletion,
+  goToStep,
   moveTask,
   routineSignature,
   selectActiveTasks,
   startRoutine,
+  stepBack,
 } from './routineMachine'
 
 function routine(overrides: Partial<RoutineItem>[] = []): RoutineItem[] {
@@ -142,6 +144,57 @@ describe('double-tap protection', () => {
     const fresh = createSession(tasks)
     expect(fresh.phase).toBe('start')
     expect(beginCompletion(fresh, tasks)).toBe(fresh)
+  })
+})
+
+describe('goToStep', () => {
+  const tasks = selectActiveTasks(routine())
+  const started = startRoutine(createSession(tasks), tasks)
+
+  it('jumps ahead, counting every earlier step as done', () => {
+    const session = goToStep(started, tasks, 3)
+    expect(session.currentIndex).toBe(3)
+    expect(session.completedIds).toEqual(tasks.slice(0, 3).map((t) => t.id))
+  })
+
+  it('jumps back, un-doing the steps from there on', () => {
+    const session = goToStep(goToStep(started, tasks, 5), tasks, 2)
+    expect(session.currentIndex).toBe(2)
+    expect(session.completedIds).toEqual(tasks.slice(0, 2).map((t) => t.id))
+  })
+
+  it('ignores the current step and out-of-range steps', () => {
+    expect(goToStep(started, tasks, 0)).toBe(started)
+    expect(goToStep(started, tasks, -1)).toBe(started)
+    expect(goToStep(started, tasks, tasks.length)).toBe(started)
+  })
+
+  it('ignores a jump mid-celebration', () => {
+    const celebrating = beginCompletion(started, tasks)
+    expect(goToStep(celebrating, tasks, 4)).toBe(celebrating)
+  })
+})
+
+describe('stepBack', () => {
+  const tasks = selectActiveTasks(routine())
+  const started = startRoutine(createSession(tasks), tasks)
+
+  it('goes back one step and un-does it', () => {
+    const session = stepBack(goToStep(started, tasks, 3), tasks)
+    expect(session.currentIndex).toBe(2)
+    expect(session.completedIds).toEqual(tasks.slice(0, 2).map((t) => t.id))
+  })
+
+  it('returns to the opening screen from the first step', () => {
+    const session = stepBack(started, tasks)
+    expect(session.phase).toBe('start')
+    expect(session.currentIndex).toBe(0)
+    expect(startRoutine(session, tasks).phase).toBe('routine')
+  })
+
+  it('ignores Back mid-celebration', () => {
+    const celebrating = beginCompletion(started, tasks)
+    expect(stepBack(celebrating, tasks)).toBe(celebrating)
   })
 })
 

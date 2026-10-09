@@ -23,6 +23,10 @@ type Props = {
   onComplete: () => void
   /** Called when the celebration ends and the routine should advance. */
   onCelebrationEnd: () => void
+  /** Tap on a step in the progress chain. */
+  onGoToTask: (index: number) => void
+  /** Back one step, or out to the opening screen from the first. */
+  onBack: () => void
   onOpenParentSettings: () => void
 }
 
@@ -33,12 +37,16 @@ type Props = {
  */
 type Stage = 'idle' | 'celebrating' | 'sliding'
 
+/** Which way the page turns: forward on Next or a later step, back otherwise. */
+type Direction = 'forward' | 'back'
+
 const CELEBRATION_MS = 800
 const SLIDE_MS = 340
 
 /**
- * The child-facing routine: exactly one task, one enormous button, and no
- * other way to move forward.
+ * The child-facing routine: exactly one task and one enormous button. Back,
+ * Next and the step chain are there for the parent, to step around a night
+ * that did not go in order; none of them celebrate.
  */
 export function RoutineScreen({
   tasks,
@@ -48,11 +56,14 @@ export function RoutineScreen({
   childName,
   onComplete,
   onCelebrationEnd,
+  onGoToTask,
+  onBack,
   onOpenParentSettings,
 }: Props) {
   const [stage, setStage] = useState<Stage>('idle')
   /** Snapshot of the task turning away, kept only for the length of the slide. */
   const [outgoing, setOutgoing] = useState<RoutineItem | null>(null)
+  const [direction, setDirection] = useState<Direction>('forward')
   const timers = useRef<number[]>([])
   /** Mirrors `stage` for synchronous reads — state is a frame behind a tap burst. */
   const busy = useRef(false)
@@ -69,43 +80,70 @@ export function RoutineScreen({
   )
 
   /**
-   * Starts the page turn and advances. Shared by both completion paths so the
-   * lock and the slide behave identically however a step was finished.
+   * Starts the page turn. Shared by every way of changing step so the lock and
+   * the slide behave identically however the parent or child got there.
    */
-  const runPageTurn = useCallback(
-    (leaving: RoutineItem) => {
-      setOutgoing(leaving)
-      setStage('sliding')
-      onCelebrationEnd()
+  const turnPage = useCallback((leaving: RoutineItem, way: Direction) => {
+    setOutgoing(leaving)
+    setDirection(way)
+    setStage('sliding')
 
-      const slideId = window.setTimeout(() => {
-        setOutgoing(null)
-        setStage('idle')
-        busy.current = false
-      }, readDurationToken('--d-slide', SLIDE_MS))
-      timers.current.push(slideId)
-    },
-    [onCelebrationEnd],
-  )
+    const slideId = window.setTimeout(() => {
+      setOutgoing(null)
+      setStage('idle')
+      busy.current = false
+    }, readDurationToken('--d-slide', SLIDE_MS))
+    timers.current.push(slideId)
+  }, [])
+
+  /**
+   * True if a step change may start now, and takes the lock if so. Every
+   * control goes through it, so no mix of taps can double-advance.
+   *
+   * Three independent guards, because a toddler generates taps faster than
+   * React re-renders: the ref (same frame), the stage (this render), and
+   * `transitioning` from the reducer (which ignores a second begin anyway).
+   */
+  const claim = useCallback(() => {
+    if (busy.current || stage !== 'idle' || transitioning || !task) return false
+    busy.current = true
+    return true
+  }, [stage, task, transitioning])
 
   /**
    * "We already did this one." Marks the step done and moves on without the
    * celebration — the child did not just earn it, so we do not pretend they
-   * did. Runs through the same lock, so it cannot double-advance either.
+   * did.
    */
-  const handleAlreadyDid = useCallback(() => {
-    if (busy.current || stage !== 'idle' || transitioning || !task) return
-    busy.current = true
+  const handleNext = useCallback(() => {
+    if (!claim()) return
     onComplete()
-    runPageTurn(task)
-  }, [onComplete, runPageTurn, stage, task, transitioning])
+    onCelebrationEnd()
+    turnPage(task, 'forward')
+  }, [claim, onCelebrationEnd, onComplete, task, turnPage])
+
+  const handleGoTo = useCallback(
+    (index: number) => {
+      if (index === currentIndex || !claim()) return
+      onGoToTask(index)
+      turnPage(task, index > currentIndex ? 'forward' : 'back')
+    },
+    [claim, currentIndex, onGoToTask, task, turnPage],
+  )
+
+  const handleBack = useCallback(() => {
+    if (currentIndex > 0) {
+      handleGoTo(currentIndex - 1)
+      return
+    }
+    // From the first step this leaves the routine: no page to turn, and no lock
+    // to take, since this screen is about to unmount.
+    if (busy.current || stage !== 'idle' || transitioning) return
+    onBack()
+  }, [currentIndex, handleGoTo, onBack, stage, transitioning])
 
   const handlePress = useCallback(() => {
-    // Three independent guards, because a toddler generates taps faster than
-    // React re-renders: the ref (same frame), the stage (this render), and
-    // `transitioning` from the reducer (which ignores a second begin anyway).
-    if (busy.current || stage !== 'idle' || transitioning || !task) return
-    busy.current = true
+    if (!claim()) return
 
     onComplete()
     successFeedback()
@@ -114,10 +152,11 @@ export function RoutineScreen({
     const celebrateId = window.setTimeout(() => {
       // Advancing and starting the slide happen in one batched update, so the
       // button is never briefly live between the two animations.
-      runPageTurn(task)
+      onCelebrationEnd()
+      turnPage(task, 'forward')
     }, readDurationToken('--d-celebrate', CELEBRATION_MS))
     timers.current.push(celebrateId)
-  }, [onComplete, runPageTurn, stage, task, transitioning])
+  }, [claim, onCelebrationEnd, onComplete, task, turnPage])
 
   if (!task) return null
 
@@ -131,34 +170,47 @@ export function RoutineScreen({
             tasks={tasks}
             completed={completedCount}
             currentIndex={currentIndex}
+            onSelect={handleGoTo}
+            locked={locked}
           />
         </ScreenHeader>
 
         <div className={styles.secondaryRow}>
           <button
             type="button"
-            className={styles.alreadyDid}
-            onClick={handleAlreadyDid}
+            className={styles.textNav}
+            onClick={handleBack}
             disabled={locked}
-            aria-label={`${task.title} — we already did this, skip ahead`}
+            aria-label={currentIndex === 0 ? 'Back to the start' : 'Back one step'}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M4.5 12.5l5 5 10-11"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Already did it
+            Back
+          </button>
+          <button
+            type="button"
+            className={styles.textNav}
+            onClick={handleNext}
+            disabled={locked}
+            aria-label={`${task.title} — we already did this, next step`}
+          >
+            Next
           </button>
         </div>
 
         <div className={styles.stage}>
-          {outgoing && <TaskStep key={`out-${outgoing.id}`} task={outgoing} motion="out" />}
-          <TaskStep key={task.id} task={task} motion={outgoing ? 'in' : 'none'} />
+          {outgoing && (
+            <TaskStep
+              key={`out-${outgoing.id}`}
+              task={outgoing}
+              motion="out"
+              direction={direction}
+            />
+          )}
+          <TaskStep
+            key={task.id}
+            task={task}
+            motion={outgoing ? 'in' : 'none'}
+            direction={direction}
+          />
         </div>
 
         <div className={styles.actionRow}>

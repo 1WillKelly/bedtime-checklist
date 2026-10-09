@@ -60,52 +60,43 @@
 }
 
 /*
- * Parent escape valve for a step that happened before the app was opened.
- * Deliberately quiet and parked at the top of the screen, away from the
- * thumb path, so it never competes with the one primary action.
+ * Parent controls for a night that does not go in order: Back on the left,
+ * Next (we already did this one) on the right. Plain text, parked at the top
+ * of the screen away from the thumb path, so they never compete with the one
+ * primary action.
  */
 .secondaryRow {
   display: flex;
-  justify-content: center;
-  padding-bottom: var(--sp-1);
+  justify-content: space-between;
+  /* Pulls the tap padding into the gutter so the words line up with the
+     edges of the content below. */
+  margin: 0 calc(-1 * var(--sp-3));
 }
 
-.alreadyDid {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
+.textNav {
   min-height: 44px;
-  padding: 0 var(--sp-4);
+  padding: 0 var(--sp-3);
   border-radius: var(--r-pill);
-  border: 2px solid var(--c-hairline);
-  background: transparent;
   color: var(--text-soft);
-  font-size: var(--fs-small);
+  font-size: var(--fs-body);
   font-weight: 800;
   transition:
     background-color var(--d-press) var(--ease-out),
     transform var(--d-press) var(--ease-out);
 }
 
-.alreadyDid:active {
+.textNav:active {
   transform: scale(0.97);
   background: rgba(107, 128, 226, 0.1);
 }
 
-.alreadyDid:disabled {
+.textNav:disabled {
   opacity: 0.4;
 }
 
-.alreadyDid:focus-visible {
+.textNav:focus-visible {
   outline: 3px solid var(--c-indigo);
   outline-offset: 2px;
-}
-
-.alreadyDid svg {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
 }
 
 .stage {
@@ -144,13 +135,22 @@
   text-wrap: balance;
 }
 
-/* Storybook page turn: outgoing leaves left, incoming arrives from the right. */
+/* Storybook page turn: outgoing leaves left, incoming arrives from the right.
+   Going back plays the same turn mirrored. */
 .slideOut {
   animation: slideOut var(--d-slide) var(--ease-out) forwards;
 }
 
 .slideIn {
   animation: slideIn var(--d-slide) var(--ease-out) both;
+}
+
+.slideOutBack {
+  animation: slideOutBack var(--d-slide) var(--ease-out) forwards;
+}
+
+.slideInBack {
+  animation: slideInBack var(--d-slide) var(--ease-out) both;
 }
 
 .actionRow {
@@ -173,6 +173,28 @@
   from {
     opacity: 0;
     transform: translateX(26%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutBack {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(26%);
+  }
+}
+
+@keyframes slideInBack {
+  from {
+    opacity: 0;
+    transform: translateX(-26%);
   }
   to {
     opacity: 1;

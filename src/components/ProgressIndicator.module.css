@@ -1,19 +1,49 @@
 .track {
   display: flex;
-  align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 0 var(--sp-1);
+}
+
+/*
+ * One equal-width cell per step. The cells butt up against each other, so
+ * when they are buttons the whole strip is tappable; the cap stops a short
+ * routine from stretching its steps across the screen.
+ */
+.step {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 68px;
+  display: grid;
+  place-items: center;
+  min-height: 52px;
+  padding: 0;
+}
+
+.tappable:focus-visible {
+  outline: none;
+}
+
+.tappable:focus-visible .node {
+  outline: 3px solid var(--c-indigo);
+  outline-offset: 2px;
+}
+
+.tappable:active:not(:disabled) .node {
+  transform: scale(0.9);
+}
+
+.tappable:disabled {
+  cursor: default;
 }
 
 .node {
   position: relative;
-  /* Shrinks rather than overflowing when a routine has many steps. */
-  flex: 0 1 auto;
-  min-width: 18px;
+  z-index: 1;
   display: grid;
   place-items: center;
-  width: clamp(24px, 7.8vw, 36px);
+  /* As big as the cell allows, leaving a sliver of thread between steps. */
+  width: min(calc(100% - 6px), 46px);
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--c-white);
@@ -25,20 +55,28 @@
 }
 
 .glyph {
-  font-size: clamp(12px, 4.1vw, 19px);
+  font-size: clamp(14px, 4.8vw, 22px);
   line-height: 1;
   /* Upcoming steps are visible but recede, so the eye lands on "now". */
   opacity: 0.45;
   transition: opacity var(--d-quick) var(--ease-out);
 }
 
-/* The connecting thread that makes the steps read as one journey. */
+/*
+ * The connecting thread that makes the steps read as one journey. It runs from
+ * the previous cell's centre to this one's, behind both circles.
+ */
 .link {
-  flex: 0 1 clamp(4px, 2.2vw, 14px);
-  min-width: 3px;
+  position: absolute;
+  top: 50%;
+  left: -50%;
+  right: 50%;
   height: 3px;
+  margin-top: -1.5px;
   border-radius: 2px;
   background: var(--c-hairline);
+  /* It reaches into the previous cell; taps there belong to that step. */
+  pointer-events: none;
   transition: background-color var(--d-quick) var(--ease-out);
 }
 
