@@ -49,9 +49,10 @@ function mergeRoutine(stored: unknown): RoutineItem[] {
   const merged = DEFAULT_ROUTINE.map((item) => {
     const saved = byId.get(item.id)
     if (!saved) return { ...item }
+    // Built-in titles aren't editable, so the stored copy is just a snapshot of
+    // an older default — take the current one so renames reach existing users.
     return {
       ...item,
-      title: typeof saved.title === 'string' && saved.title ? saved.title : item.title,
       enabled: typeof saved.enabled === 'boolean' ? saved.enabled : item.enabled,
       order: typeof saved.order === 'number' ? saved.order : item.order,
     }

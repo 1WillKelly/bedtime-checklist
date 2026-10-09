@@ -11,7 +11,7 @@ export const DEFAULT_ROUTINE: RoutineItem[] = [
   { id: 'pajamas', title: 'Pajamas', illustration: 'pajamas', enabled: true, order: 3 },
   { id: 'read-books', title: 'Read books', illustration: 'books', enabled: true, order: 4 },
   { id: 'drink-water', title: 'Drink water', illustration: 'water', enabled: true, order: 5 },
-  { id: 'sing-a-song', title: 'Sing a song', illustration: 'song', enabled: true, order: 6 },
+  { id: 'sing-a-song', title: 'Snuggle / song', illustration: 'song', enabled: true, order: 6 },
   { id: 'goodnight', title: 'Goodnight', illustration: 'goodnight', enabled: true, order: 7 },
 ]
 
