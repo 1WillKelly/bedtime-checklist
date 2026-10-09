@@ -1,18 +1,19 @@
 .header {
   display: grid;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
   width: 100%;
 }
 
 .settings {
   justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   min-height: 40px;
-  padding: 0 var(--sp-3);
-  /* Pulls the tap padding into the gutter so the word lines up with the
-     content edge below it. */
-  margin-left: calc(-1 * var(--sp-3));
+  padding: 0 var(--sp-4) 0 var(--sp-3);
   border-radius: var(--r-pill);
-  color: var(--corner-color, rgba(108, 123, 153, 0.85));
+  background: var(--settings-bg, rgba(107, 128, 226, 0.12));
+  color: var(--settings-color, var(--c-indigo-deep));
   font-size: var(--fs-small);
   font-weight: 800;
   transition:
@@ -20,9 +21,15 @@
     transform var(--d-press) var(--ease-out);
 }
 
+.settings svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
 .settings:active {
   transform: scale(0.96);
-  background: rgba(107, 128, 226, 0.12);
+  background: var(--settings-bg-active, rgba(107, 128, 226, 0.22));
 }
 
 .settings:focus-visible {
@@ -31,7 +38,9 @@
 }
 
 .onNight {
-  --corner-color: rgba(233, 238, 252, 0.65);
+  --settings-bg: rgba(255, 255, 255, 0.12);
+  --settings-bg-active: rgba(255, 255, 255, 0.22);
+  --settings-color: rgba(233, 238, 252, 0.9);
 }
 
 .center {

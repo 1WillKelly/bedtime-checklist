@@ -43,6 +43,19 @@ type Direction = 'forward' | 'back'
 const CELEBRATION_MS = 800
 const SLIDE_MS = 340
 
+const ArrowIcon = ({ direction }: { direction: Direction }) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path
+      d={direction === 'back' ? 'M19 12H5.5M11 5.5 4.5 12l6.5 6.5' : 'M5 12h13.5M13 5.5l6.5 6.5-6.5 6.5'}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+)
+
 /**
  * The child-facing routine: exactly one task and one enormous button. Back,
  * Next and the step chain are there for the parent, to step around a night
@@ -183,6 +196,7 @@ export function RoutineScreen({
             disabled={locked}
             aria-label={currentIndex === 0 ? 'Back to the start' : 'Back one step'}
           >
+            <ArrowIcon direction="back" />
             Back
           </button>
           <button
@@ -193,6 +207,7 @@ export function RoutineScreen({
             aria-label={`${task.title} — we already did this, next step`}
           >
             Next
+            <ArrowIcon direction="forward" />
           </button>
         </div>
 

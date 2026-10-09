@@ -61,22 +61,25 @@
 
 /*
  * Parent controls for a night that does not go in order: Back on the left,
- * Next (we already did this one) on the right. Plain text, parked at the top
- * of the screen away from the thumb path, so they never compete with the one
- * primary action.
+ * Next (we already did this one) on the right. Quiet outlined pills, parked at
+ * the top of the screen away from the thumb path, so they never compete with
+ * the one primary action.
  */
 .secondaryRow {
   display: flex;
   justify-content: space-between;
-  /* Pulls the tap padding into the gutter so the words line up with the
-     edges of the content below. */
-  margin: 0 calc(-1 * var(--sp-3));
 }
 
 .textNav {
-  min-height: 44px;
-  padding: 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 50px;
+  padding: 0 1.25rem;
   border-radius: var(--r-pill);
+  border: 2px solid var(--c-hairline);
+  background: transparent;
   color: var(--text-soft);
   font-size: var(--fs-body);
   font-weight: 800;
@@ -97,6 +100,12 @@
 .textNav:focus-visible {
   outline: 3px solid var(--c-indigo);
   outline-offset: 2px;
+}
+
+.textNav svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
 }
 
 .stage {

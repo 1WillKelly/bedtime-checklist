@@ -11,8 +11,8 @@ type Props = {
 
 /**
  * The end. No score, no streak, no "play again" — the only message is that
- * we are finished and it is time to sleep. The one control is a muted Settings
- * link at the top, which does not read as an invitation to keep playing.
+ * we are finished and it is time to sleep. The one control is a small Settings
+ * button at the top, which does not read as an invitation to keep playing.
  */
 export function GoodnightScreen({ childName, onOpenParentSettings }: Props) {
   return (
